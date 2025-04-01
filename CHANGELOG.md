@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the P-Bot project will be documented in this file.
+All notable changes to the P-GPT project will be documented in this file.
 
 ## [0.1.0] - 2023-07-11
 

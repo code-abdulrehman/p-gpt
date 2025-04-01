@@ -1,5 +1,5 @@
 {
-  "name": "p-bot",
+  "name": "p-gpt",
   "description": "A modern, customizable React chat component library with multiple themes, layouts, and LLM integration",
   "private": false,
   "version": "0.1.0",
@@ -24,15 +24,15 @@
     "themes",
     "responsive"
   ],
-  "author": "P-Bot Team",
+  "author": "P-GPT Team",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/code-abdulrehman/p-bot"
+    "url": "https://github.com/code-abdulrehman/p-gpt"
   },
-  "homepage": "https://github.com/code-abdulrehman/p-bot#readme",
+  "homepage": "https://github.com/code-abdulrehman/p-gpt#readme",
   "bugs": {
-    "url": "https://github.com/code-abdulrehman/p-bot/issues"
+    "url": "https://github.com/code-abdulrehman/p-gpt/issues"
   },
   "scripts": {
     "dev": "vite",

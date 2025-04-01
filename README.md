@@ -1,9 +1,9 @@
-# p-bot
+# p-gpt
 
 
 A modern, customizable React chatbot component with beautiful UI themes and OpenAI integration. Add an AI-powered chat assistant to your app in minutes!
 
-![P-Bot Demo](ss2.png)
+![P-GPT Demo](ss2.png)
 
 ## ✨ Quick Start
 
@@ -11,24 +11,24 @@ A modern, customizable React chatbot component with beautiful UI themes and Open
 
 Install the package
 ```bash
-npm install p-bot
+npm install p-gpt
 ```
 
 or with yarn
 ```bash
-yarn add p-bot
+yarn add p-gpt
 ```
 
 or with pnpm
 ```bash
-pnpm add p-bot
+pnpm add p-gpt
 ```
 
 ### Basic Usage
 
 ```jsx
-import { PBot } from 'p-bot';
-import 'p-bot/dist/p-bot.css'; // Import styles
+import { PBot } from 'p-gpt';
+import 'p-gpt/dist/p-gpt.css'; // Import styles
 
 function App() {
   return (
@@ -192,7 +192,7 @@ Control size and position:
 The library provides utilities to manage saved conversations:
 
 ```jsx
-import { getAllPBotConversations, clearPBotConversation, clearAllPBotConversations } from 'p-bot';
+import { getAllPBotConversations, clearPBotConversation, clearAllPBotConversations } from 'p-gpt';
 
 // Get all saved conversations
 const conversations = getAllPBotConversations();
@@ -243,13 +243,13 @@ Compatible with all modern browsers:
 
 ## 🔗 Links
 
-- [GitHub Repository](https://github.com/p-bot/p-bot)
-- [Issue Tracker](https://github.com/p-bot/p-bot/issues)
-- [NPM Package](https://www.npmjs.com/package/p-bot)
+- [GitHub Repository](https://github.com/p-gpt/p-gpt)
+- [Issue Tracker](https://github.com/p-gpt/p-gpt/issues)
+- [NPM Package](https://www.npmjs.com/package/p-gpt)
 
 ## 👨‍💻 Author
 
-P-Bot is created and maintained by Abdul Rehman.
+P-GPT is created and maintained by Abdul Rehman.
 
 ## 🤝 Contributing
 

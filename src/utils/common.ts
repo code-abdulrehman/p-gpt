@@ -315,8 +315,8 @@ export const DEFAULT_HEADER_TEXT = {
  * Default footer text configurations
  */
 export const DEFAULT_FOOTER_TEXT = {
-  poweredBy: "Powered by P-Bot",
-  copyright: `© ${new Date().getFullYear()} P-Bot`,
+  poweredBy: "Powered by p-GPT",
+  copyright: `© ${new Date().getFullYear()} P-GPT`,
   privacyText: "Your conversations are private",
   versionText: "v1.0.0",
 };

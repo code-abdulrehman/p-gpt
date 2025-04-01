@@ -47,7 +47,7 @@ const customStyles = {
 root.render(
   <StrictMode>
     <div className="p-4 min-h-screen bg-gray-100 flex flex-col">
-      <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">P-Bot Demo</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">P-GPT Demo</h1>
       
       <div className="my-4 max-w-3xl mx-auto">
         <p className="text-gray-700 text-center mb-8">
