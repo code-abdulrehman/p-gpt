@@ -2,7 +2,7 @@
   "name": "p-gpt",
   "description": "A modern, customizable React chat component library with multiple themes, layouts, and LLM integration",
   "private": false,
-  "version": "0.1.1",
+  "version": "1.0.2",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
