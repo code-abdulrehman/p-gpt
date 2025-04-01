@@ -187,23 +187,6 @@ Control size and position:
 />
 ```
 
-## 🔄 Managing Conversations
-
-The library provides utilities to manage saved conversations:
-
-```jsx
-import { getAllPBotConversations, clearPBotConversation, clearAllPBotConversations } from 'p-gpt';
-
-// Get all saved conversations
-const conversations = getAllPBotConversations();
-
-// Clear a specific conversation
-clearPBotConversation('conversation-id');
-
-// Clear all conversations
-clearAllPBotConversations();
-```
-
 ## 👨‍👩‍👧‍👦 Browser Support
 
 Compatible with all modern browsers:
