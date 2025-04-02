@@ -4,14 +4,14 @@ import {
 } from "react-icons/fa";
 import { SiRobotframework } from "react-icons/si";
 import { 
-  PBotThemeConfig, THEME_CONFIGS, DEFAULT_HEADER_TEXT, 
+  PGPTThemeConfig, THEME_CONFIGS, DEFAULT_HEADER_TEXT, 
   DEFAULT_FOOTER_TEXT, DEFAULT_SYSTEM_MESSAGES, DEFAULT_BUTTON_POSITION,
-  PBotCustomStyles
+  PGPTCustomStyles
 } from "../utils/common";
 import { ChatMessage, sendMessage, getModelsForProvider } from "../utils/api";
 import TypewriterText from './TypewriterText';
 
-interface PBotProps {
+interface PGPTProps {
   apiKey: string;
   llmProvider?: string;
   model?: string;
@@ -30,7 +30,7 @@ interface PBotProps {
   maxHeight?: string;
   chatLayout?: 'popup' | 'sidebar' | 'normal';
   systemMessage?: string;
-  customStyles?: PBotCustomStyles;
+  customStyles?: PGPTCustomStyles;
   showLabelWithLogo?: boolean;
   fixedHeight?: string;
   errorColor?: string;
@@ -39,7 +39,7 @@ interface PBotProps {
   enableTypingAnimation?: boolean;
 }
 
-const PBot: React.FC<PBotProps> = ({
+const PGPT: React.FC<PGPTProps> = ({
   apiKey,
   llmProvider = "OpenAI",
   model,
@@ -90,7 +90,7 @@ const PBot: React.FC<PBotProps> = ({
   const inputRef = useRef<HTMLTextAreaElement>(null);
   
   // Theme object from configuration
-  const themeConfig: PBotThemeConfig = THEME_CONFIGS[currentTheme] || THEME_CONFIGS.blue;
+  const themeConfig: PGPTThemeConfig = THEME_CONFIGS[currentTheme] || THEME_CONFIGS.blue;
 
   // Position styles
   const positionClasses = {
@@ -172,7 +172,7 @@ const PBot: React.FC<PBotProps> = ({
 
   // Load saved messages from localStorage on initial load
   useEffect(() => {
-    const savedMessages = localStorage.getItem(`pbot-messages-${currentTheme}-${currentProvider}`);
+    const savedMessages = localStorage.getItem(`pgpt-messages-${currentTheme}-${currentProvider}`);
     if (savedMessages) {
       try {
         const parsedMessages = JSON.parse(savedMessages);
@@ -262,7 +262,7 @@ const PBot: React.FC<PBotProps> = ({
 
     try {
       // Send message to API
-      const response = await sendMessage({
+      const response : ChatMessage | null = await sendMessage({
         provider: currentProvider,
         apiKey,
         model: currentModel,
@@ -274,6 +274,12 @@ const PBot: React.FC<PBotProps> = ({
       if (response) {
         // Add bot response to conversation
         setMessages(prev => [...prev, response]);
+        
+        // Save messages to localStorage
+        localStorage.setItem(
+          `pgpt-messages-${currentTheme}-${currentProvider}`,
+          JSON.stringify([...messages, userMessage, response])
+        );
       } else {
         // Handle error
         setError("Failed to get response from AI");
@@ -505,7 +511,7 @@ const PBot: React.FC<PBotProps> = ({
   );
 
   return (
-    <div className="pbot-container">
+    <div className="pgpt-container">
       {/* Chat toggle button */}
       <div className={`fixed ${positionClasses[position]} z-50`}>
         {renderChatButton()}
@@ -528,4 +534,4 @@ const PBot: React.FC<PBotProps> = ({
   );
 };
 
-export default PBot;
+export default PGPT;

@@ -1,22 +1,22 @@
 // Components
-export { default as PBot } from './components/PBotNew';
+export { default as PGPT } from './components/PGPT';
 export { default as TypewriterText } from './components/TypewriterText';
 
-// Re-exporting types directly since they're not exported from PBotNew
-import type { PBotCustomStyles, PBotThemeConfig } from './utils/common';
+// Re-exporting types directly since they're not exported from PGPT
+import type { PGPTCustomStyles, PGPTThemeConfig } from './utils/common';
 import type { ChatMessage } from './utils/api';
 
 // Define the types that should be exported
-export type PBotPosition = 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
-export type PBotTheme = string;
-export type PBotLayout = 'popup' | 'sidebar' | 'normal';
-export type PBotButtonSize = 'small' | 'medium' | 'large';
-export type PBotRole = string;
-export type PBotLLMProvider = string;
-export type PBotChatMessage = ChatMessage;
+export type PGPTPosition = 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
+export type PGPTTheme = string;
+export type PGPTLayout = 'popup' | 'sidebar' | 'normal';
+export type PGPTButtonSize = 'small' | 'medium' | 'large';
+export type PGPTRole = string;
+export type PGPTLLMProvider = string;
+export type PGPTChatMessage = ChatMessage;
 
-// Export the PBotProps interface
-export interface PBotProps {
+// Export the PGPTProps interface
+export interface PGPTProps {
   apiKey: string;
   llmProvider?: string;
   model?: string;
@@ -24,18 +24,18 @@ export interface PBotProps {
   title?: string;
   subtitle?: string;
   theme?: string;
-  position?: PBotPosition;
+  position?: PGPTPosition;
   welcomeMessage?: string;
-  buttonSize?: PBotButtonSize;
+  buttonSize?: PGPTButtonSize;
   initiallyOpen?: boolean;
   role?: string;
   rules?: string[];
   customLogo?: React.ReactNode;
   minHeight?: string;
   maxHeight?: string;
-  chatLayout?: PBotLayout;
+  chatLayout?: PGPTLayout;
   systemMessage?: string;
-  customStyles?: PBotCustomStyles;
+  customStyles?: PGPTCustomStyles;
   showLabelWithLogo?: boolean;
   fixedHeight?: string;
   errorColor?: string;
@@ -48,7 +48,7 @@ export {
   THEME_CONFIGS
 } from './utils/common';
 
-export type { PBotCustomStyles, PBotThemeConfig };
+export type { PGPTCustomStyles, PGPTThemeConfig };
 
 // Export the API utilities
 export {
@@ -59,10 +59,3 @@ export {
 } from './utils/api';
 
 export type { ChatMessage, SendMessageOptions } from './utils/api';
-
-export {
-  useLocalStorage,
-  getAllPBotConversations,
-  clearPBotConversation,
-  clearAllPBotConversations
-} from './utils/useLocalStorage'; 

@@ -28,6 +28,11 @@ export default defineConfig({
     }),
     commonjs(),
     json(),
+    postcss({
+      extensions: [".css"],
+      extract: true,
+      minimize: true,
+    }),
     typescript({
       tsconfig: "./tsconfig.json",
       declaration: true,
@@ -42,10 +47,6 @@ export default defineConfig({
       ],
       extensions: [".js", ".jsx", ".ts", ".tsx"],
       exclude: "node_modules/**",
-    }),
-    postcss({
-      extensions: [".css"],
-      minimize: true,
     }),
     image(),
     terser(),

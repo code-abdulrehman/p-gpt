@@ -18,7 +18,7 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/main.tsx'),
-      name: 'PBot',
+      name: 'PGPT',
       formats: ['es', 'cjs'],
       fileName: (format) => `index.${format === 'es' ? 'esm' : format}.js`,
     },

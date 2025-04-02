@@ -1,6 +1,5 @@
 # p-gpt
 
-
 A modern, customizable React chatbot component with beautiful UI themes and OpenAI integration. Add an AI-powered chat assistant to your app in minutes!
 
 ![P-GPT Demo](ss2.png)
@@ -9,7 +8,12 @@ A modern, customizable React chatbot component with beautiful UI themes and Open
 
 ### Installation
 
-Install the package
+Install the package using pnpm (recommended)
+```bash
+pnpm add p-gpt
+```
+
+or with npm
 ```bash
 npm install p-gpt
 ```
@@ -19,16 +23,11 @@ or with yarn
 yarn add p-gpt
 ```
 
-or with pnpm
-```bash
-pnpm add p-gpt
-```
-
 ### Basic Usage
 
 ```jsx
-import { PBot } from 'p-gpt';
-import 'p-gpt/dist/p-gpt.css'; // Import styles
+import { PGPT } from 'p-gpt';
+import 'p-gpt/dist/index.css'; // Import styles
 
 function App() {
   return (
@@ -36,7 +35,7 @@ function App() {
       <h1>My Website</h1>
       
       {/* Add the chatbot anywhere in your app */}
-      <PBot 
+      <PGPT 
         apiKey="your-openai-api-key" 
         model="gpt-4" // or gpt-3.5-turbo, etc.
       />
@@ -65,12 +64,12 @@ function App() {
 | `model` | string | OpenAI model to use (default: first available) |
 | `theme` | string | UI theme (default: "blue") |
 | `position` | string | Button position (default: "bottom-right") |
-| `title` | string | Chat title (default: "PBot Assistant") |
+| `title` | string | Chat title (default: "PGPT Assistant") |
 
 ### Example with Common Options
 
 ```jsx
-<PBot 
+<PGPT 
   apiKey="your-openai-api-key" 
   model="gpt-4"
   title="Customer Support"
@@ -90,7 +89,7 @@ Choose from these beautiful themes:
 - `blue`, `purple`, `green`, `amber`, `teal`, `indigo`, `red`, `pink`, `midnight`, `sunset`
 
 ```jsx
-<PBot theme="purple" />
+<PGPT theme="purple" />
 ```
 
 ## 💼 Customer Support Integration
@@ -98,7 +97,7 @@ Choose from these beautiful themes:
 Create a dedicated customer support chatbot with just a few lines of code:
 
 ```jsx
-<PBot 
+<PGPT 
   apiKey="your-openai-api-key"
   title="Customer Support"
   subtitle="We're here to help!"
@@ -117,20 +116,20 @@ For different support departments:
 
 ```jsx
 // Technical Support
-<PBot 
+<PGPT 
   role="coder"  // Technical mindset
   title="Tech Support" 
   systemMessage="You are a technical support specialist. Help users solve technical problems with our software."
 />
 
 // Billing Support
-<PBot 
+<PGPT 
   title="Billing Support"
   systemMessage="You are a billing support specialist. Help users with questions about their account, subscriptions, and payments."
 />
 
 // Product Support
-<PBot 
+<PGPT 
   title="Product Help" 
   systemMessage="You are a product specialist. Help users understand how to use our product features effectively."
 />
@@ -145,7 +144,7 @@ For different support departments:
 | `sidebar` | Full-height sidebar |
 
 ```jsx
-<PBot chatLayout="sidebar" />
+<PGPT chatLayout="sidebar" />
 ```
 
 ## 💬 Assistant Roles
@@ -153,9 +152,9 @@ For different support departments:
 Set up specialized assistants with predefined personalities:
 
 ```jsx
-<PBot role="coder" />  // Programming assistant
-<PBot role="customer_support" /> // Customer Support assistant 
-<PBot role="teacher" /> // Educational assistant
+<PGPT role="coder" />  // Programming assistant
+<PGPT role="customer_support" /> // Customer Support assistant 
+<PGPT role="teacher" /> // Educational assistant
 ```
 
 Available roles: `assistant`, `coder`, `writer`, `teacher`, `researcher`, `translator`, `customer_support`
@@ -172,7 +171,7 @@ const customStyles = {
   botBubble: { borderRadius: '18px' }
 };
 
-<PBot customStyles={customStyles} />
+<PGPT customStyles={customStyles} />
 ```
 
 ## 📱 Responsive Options
@@ -180,7 +179,7 @@ const customStyles = {
 Control size and position:
 
 ```jsx
-<PBot 
+<PGPT 
   position="bottom-right" // or "bottom-left", "top-right", "top-left"
   buttonSize="medium"     // or "small", "large"
   fixedHeight="400px"     // for normal layout
@@ -194,14 +193,13 @@ Compatible with all modern browsers:
 
 ## 🛠️ Complete Props Reference
 
-
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `apiKey` | string | - | OpenAI API key (required) |
 | `llmProvider` | string | "openai" | LLM provider |
 | `model` | string | (first available) | OpenAI model name |
 | `placeholder` | string | "Type your message here..." | Input placeholder text |
-| `title` | string | "PBot Assistant" | Title displayed in header |
+| `title` | string | "PGPT Assistant" | Title displayed in header |
 | `subtitle` | string | "AI-powered chat assistant" | Subtitle displayed in header |
 | `theme` | string | "blue" | UI theme |
 | `position` | string | "bottom-right" | Position of chat button |
@@ -223,11 +221,10 @@ Compatible with all modern browsers:
 | `isCloseable` | boolean | true | Whether chat can be closed |
 | `enableTypingAnimation` | boolean | false | Enable typing animation |
 
-
 ## 🔗 Links
 
-- [GitHub Repository](https://github.com/p-gpt/p-gpt)
-- [Issue Tracker](https://github.com/p-gpt/p-gpt/issues)
+- [GitHub Repository](https://github.com/code-abdulrehman/p-gpt)
+- [Issue Tracker](https://github.com/code-abdulrehman/p-gpt/issues)
 - [NPM Package](https://www.npmjs.com/package/p-gpt)
 
 ## 👨‍💻 Author

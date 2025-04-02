@@ -34,7 +34,7 @@ body {
 @tailwind components;
 @tailwind utilities;
 
-/* Custom animations for PBot */
+/* Custom animations for PGPT */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -129,30 +129,30 @@ body {
   animation: typingCursor 0.8s infinite;
 }
 
-/* Remove focus outline on PBot elements */
-.pbot-container button:focus,
-.pbot-container input:focus,
-.pbot-container select:focus {
+/* Remove focus outline on PGPT elements */
+.pgpt-container button:focus,
+.pgpt-container input:focus,
+.pgpt-container select:focus {
   outline: none !important;
   box-shadow: none !important;
 }
 
 /* Custom scrollbar styles */
-.pbot-container ::-webkit-scrollbar {
+.pgpt-container ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
-.pbot-container ::-webkit-scrollbar-track {
+.pgpt-container ::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.pbot-container ::-webkit-scrollbar-thumb {
+.pgpt-container ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 3px;
 }
 
-.pbot-container ::-webkit-scrollbar-thumb:hover {
+.pgpt-container ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.3);
 }
 

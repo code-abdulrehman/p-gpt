@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import PBot from "./components/PBotNew" 
+import PGPT from "./components/PGPT" 
 import { FaRobot, FaCode } from "react-icons/fa"
 
 // Main entry point for the application
@@ -51,22 +51,22 @@ root.render(
       
       <div className="my-4 max-w-3xl mx-auto">
         <p className="text-gray-700 text-center mb-8">
-          This demo showcases the updated PBot component with position matching, 
+          This demo showcases the updated PGPT component with position matching, 
           fixed height normal layout, error messages, and custom styling.
         </p>
       </div>
       
-      {/* PBot with different configurations */}
+      {/* PGPT with different configurations */}
       
       {/* Normal layout - Positioned in bottom-right corner */}
-      <PBot 
+      <PGPT 
         apiKey="YOUR_API_KEY" 
         model="gpt-4o"
         role="customer_support"
       />
       
       {/* Popup layout - Center */}
-      <PBot 
+      <PGPT 
         apiKey="YOUR_API_KEY" 
         model="gpt-4o"
         initiallyOpen={true}
@@ -84,7 +84,7 @@ root.render(
       />
       
       {/* Custom styled chat */}
-      <PBot 
+      <PGPT 
         apiKey="YOUR_API_KEY" 
         theme="teal"
         position="top-right"
@@ -93,13 +93,14 @@ root.render(
         buttonSize="medium"
         chatLayout="normal"
         role="teacher"
+        rules={exampleRules}
         initiallyOpen={false}
         customStyles={customStyles}
         fixedHeight="450px"
       />
       
       {/* Sidebar layout */}
-      <PBot 
+      <PGPT 
         apiKey="YOUR_API_KEY" 
         theme="sunset"
         position="top-left"
@@ -118,4 +119,4 @@ root.render(
 );
 
 // Export the components for library usage
-export { default as PBot } from './components/PBotNew'; 
+export { default as PGPT } from './components/PGPT'; 

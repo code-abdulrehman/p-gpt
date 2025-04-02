@@ -36,7 +36,7 @@ export const getLlmCdnProvider = (name: string): LlmCdnConfig | undefined => {
 /**
  * Theme configuration interface for the chat component
  */
-export interface PBotThemeConfig {
+export interface PGPTThemeConfig {
   header: string;
   body: string;
   footer: string;
@@ -58,7 +58,7 @@ export interface PBotThemeConfig {
 /**
  * Custom styles interface to override default theme styles
  */
-export interface PBotCustomStyles {
+export interface PGPTCustomStyles {
   chatContainer?: React.CSSProperties;
   header?: React.CSSProperties;
   footer?: React.CSSProperties;
@@ -76,7 +76,7 @@ export interface PBotCustomStyles {
 /**
  * Available theme configurations for the chat component
  */
-export const THEME_CONFIGS: Record<string, PBotThemeConfig> = {
+export const THEME_CONFIGS: Record<string, PGPTThemeConfig> = {
   light: {
     header: "bg-white border-gray-200",
     body: "bg-gray-50",
@@ -304,7 +304,7 @@ export const THEME_CONFIGS: Record<string, PBotThemeConfig> = {
  * Default header/title text configurations
  */
 export const DEFAULT_HEADER_TEXT = {
-  title: "PBot Assistant",
+  title: "PGPT Assistant",
   subtitle: "AI-powered chat assistant",
   welcomeMessage: "Hello! How can I help you today?",
   placeholderText: "Type your message here...",
