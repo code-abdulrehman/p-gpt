@@ -36,8 +36,7 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "rollup -c && cp src/index.css dist/index.css",
-    "build:vite": "tsc && vite build",
+    "build": "tsc && vite build && cp src/index.css dist/index.css",
     "lint": "eslint . --ext ts,tsx,js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
