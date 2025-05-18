@@ -6,117 +6,524 @@ import { SiRobotframework } from "react-icons/si";
 import { 
   PGPTThemeConfig, THEME_CONFIGS, DEFAULT_HEADER_TEXT, 
   DEFAULT_FOOTER_TEXT, DEFAULT_SYSTEM_MESSAGES, DEFAULT_BUTTON_POSITION,
-  PGPTCustomStyles
+  PGPTCustomStyles, STORAGE_TYPES, APPEARANCE_MODES, OPEN_TRIGGERS
 } from "../utils/common";
 import { ChatMessage, sendMessage, getModelsForProvider } from "../utils/api";
+
+// Import modular components
+import ChatHeader from './ChatHeader';
+import ChatFooter from './ChatFooter';
+import ChatButton from './ChatButton';
+import ChatBubble from './ChatBubble';
+import LoadingAnimation from './LoadingAnimation';
 import TypewriterText from './TypewriterText';
 
-interface PGPTProps {
-  apiKey: string;
-  llmProvider?: string;
-  model?: string;
-  placeholder?: string;
-  title?: string;
-  subtitle?: string;
-  theme?: string;
-  position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
-  welcomeMessage?: string;
-  buttonSize?: 'small' | 'medium' | 'large';
-  initiallyOpen?: boolean;
-  role?: string;
-  rules?: string[];
-  customLogo?: React.ReactNode;
-  minHeight?: string;
-  maxHeight?: string;
-  chatLayout?: 'popup' | 'sidebar' | 'normal';
-  systemMessage?: string;
-  customStyles?: PGPTCustomStyles;
-  showLabelWithLogo?: boolean;
-  fixedHeight?: string;
-  errorColor?: string;
-  warningColor?: string;
-  isCloseable?: boolean;
-  enableTypingAnimation?: boolean;
+/**
+ * Interface for router configuration
+ */
+interface RouterConfig {
+  endpoint: string;
+  headers?: Record<string, string>;
+  maxTokens?: number;
+  customPayload?: Record<string, any>;
 }
 
+/**
+ * Interface for custom position
+ */
+interface CustomPosition {
+  x: string | number;
+  y: string | number;
+  offsetX?: string | number;
+  offsetY?: string | number;
+}
+
+/**
+ * Interface for storage configuration
+ */
+interface StorageConfig {
+  type: string;
+  key?: string;
+  getItem?: (key: string) => string | null | Promise<string | null>;
+  setItem?: (key: string, value: string) => void | Promise<void>;
+}
+
+/**
+ * Interface for content configuration
+ */
+interface ContentConfig {
+  title?: string;
+  subtitle?: string;
+  welcomeMessage?: string;
+  placeholder?: string;
+  systemMessage?: string;
+}
+
+/**
+ * Interface for color configuration 
+ */
+interface ColorConfig {
+  primary?: string;
+  secondary?: string;
+  background?: string;
+  text?: string;
+  userBubble?: string;
+  botBubble?: string;
+  error?: string;
+  warning?: string;
+}
+
+/**
+ * Interface for classes configuration
+ */
+interface ClassesConfig {
+  container?: string;
+  header?: string;
+  body?: string;
+  footer?: string;
+  userBubble?: string;
+  botBubble?: string;
+  input?: string;
+  button?: string;
+}
+
+// Position types
+type PositionType = 
+  | 'top-left'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-right'
+  | 'center'
+  | 'left-full-height'
+  | 'right-full-height'
+  | 'top-full-width'
+  | 'bottom-full-width'
+  | 'fixed'
+  | 'fullscreen'
+  | 'custom';
+
+/**
+ * Main PGPT component props
+ */
+interface PGPTProps {
+  // Core Props
+  apiKey?: string;
+  routerConfig?: RouterConfig;
+  theme?: string;
+  appearance?: string;
+  model?: string;
+  position?: PositionType | CustomPosition;
+  
+  // Content Props
+  content?: ContentConfig;
+  
+  // Styling Props
+  colors?: ColorConfig;
+  classes?: ClassesConfig;
+  styles?: PGPTCustomStyles;
+  
+  // Behavior Props
+  useTextarea?: boolean;
+  enableTypingAnimation?: boolean;
+  defaultOpen?: boolean;
+  openTrigger?: 'click' | 'hover';
+  isCloseable?: boolean;
+  
+  // Storage Props
+  storage?: StorageConfig;
+  
+  // Customization Props
+  logo?: React.ReactNode;
+  buttonSize?: 'small' | 'medium' | 'large';
+  buttonStyle?: 'circle' | 'rounded' | 'square' | 'sharp' | 'pill';
+  
+  // Advanced Props
+  llmProvider?: string;
+  role?: string;
+  rules?: string[];
+  
+  // Sizing Props
+  minHeight?: string;
+  maxHeight?: string;
+  fixedHeight?: string;
+  
+  // Layout Props
+  chatLayout?: 'popup' | 'sidebar' | 'normal';
+  showLabelWithLogo?: boolean;
+  
+  // UI Options
+  bubbleStyle?: 'default' | 'modern' | 'rounded' | 'sharp' | 'bordered' | 'minimal';
+  loadingAnimation?: 'dots' | 'spinner' | 'pulse' | 'bar' | 'typingDots';
+  bubbleAnimation?: boolean;
+  
+  // Event Handlers
+  onSendMessage?: (message: string) => void;
+  onReceiveMessage?: (message: ChatMessage) => void;
+  onOpen?: () => void;
+  onClose?: () => void;
+}
+
+/**
+ * Main PGPT Component
+ */
 const PGPT: React.FC<PGPTProps> = ({
+  // Core Props
   apiKey,
-  llmProvider = "OpenAI",
-  model,
-  placeholder = DEFAULT_HEADER_TEXT.placeholderText,
-  title = DEFAULT_HEADER_TEXT.title,
-  subtitle = DEFAULT_HEADER_TEXT.subtitle,
-  theme = "blue",
+  routerConfig,
+  theme = 'blue',
+  appearance = 'light',
+  model = 'gpt-4o',
   position = DEFAULT_BUTTON_POSITION,
-  welcomeMessage = DEFAULT_HEADER_TEXT.welcomeMessage,
-  buttonSize = "medium",
-  initiallyOpen = false,
-  role = "assistant",
+  
+  // Content Props
+  content = {},
+  
+  // Styling Props
+  colors = {},
+  classes = {},
+  styles = {},
+  
+  // Behavior Props
+  useTextarea = false,
+  enableTypingAnimation = true,
+  defaultOpen = false,
+  openTrigger = 'click',
+  isCloseable = false,
+  
+  // Storage Props
+  storage = { type: STORAGE_TYPES.LOCAL },
+  
+  // Customization Props
+  logo,
+  buttonSize = 'medium',
+  buttonStyle = 'circle',
+  
+  // Advanced Props
+  llmProvider = 'OpenAI',
+  role = 'assistant',
   rules = [],
-  customLogo,
-  minHeight = "28rem",
-  maxHeight = "80vh",
-  chatLayout = "normal",
-  systemMessage = "",
-  customStyles = {},
+  
+  // Sizing Props
+  minHeight = '28rem',
+  maxHeight = '80vh',
+  fixedHeight = '',
+  
+  // Layout Props
+  chatLayout = 'normal',
   showLabelWithLogo = false,
-  fixedHeight = "400px",
-  errorColor = "#ef4444",
-  warningColor = "#f59e0b",
-  isCloseable = true,
-  enableTypingAnimation
+  
+  // UI Options
+  bubbleStyle = 'default',
+  loadingAnimation = 'typingDots',
+  bubbleAnimation = true,
+  
+  // Event Handlers
+  onSendMessage,
+  onReceiveMessage,
+  onOpen,
+  onClose
 }) => {
+  // Apply defaults for content configuration
+  const contentConfig = {
+    title: content.title || DEFAULT_HEADER_TEXT.title,
+    subtitle: content.subtitle || DEFAULT_HEADER_TEXT.subtitle,
+    welcomeMessage: content.welcomeMessage || DEFAULT_HEADER_TEXT.welcomeMessage,
+    placeholder: content.placeholder || DEFAULT_HEADER_TEXT.placeholderText,
+    systemMessage: content.systemMessage || '',
+  };
+
+  // Apply defaults for colors
+  const errorColor = colors.error || "#ef4444";
+  const warningColor = colors.warning || "#f59e0b";
+
   // Component state
-  const [isOpen, setIsOpen] = useState(initiallyOpen ? true : false);
+  const [isOpen, setIsOpen] = useState(defaultOpen);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [currentTheme] = useState<string>(theme);
   const [currentProvider] = useState<string>(llmProvider);
-  const [currentModel] = useState<string>(model || getModelsForProvider(llmProvider)[0]);
+  const [currentModel] = useState<string>(
+    model || 
+    (routerConfig?.customPayload?.model ? routerConfig.customPayload.model : 
+      getModelsForProvider(llmProvider)[0])
+  );
   const [currentRole] = useState<string>(role);
   const [isClosing, setIsClosing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
+  const [lastBotMessageIndex, setLastBotMessageIndex] = useState<number>(-1);
+  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
   
   // Determine if typing animation should be used
-  const shouldUseTypingAnimation = enableTypingAnimation !== undefined 
-    ? enableTypingAnimation 
-    : currentRole === "writer";
+  const shouldUseTypingAnimation = enableTypingAnimation;
+
+  // Check if we're using REST API route instead of direct LLM integration
+  const useRestApi = !!routerConfig;
+
+  // Check if required props are provided
+  useEffect(() => {
+    if (!apiKey && !routerConfig) {
+      setWarning("Either apiKey or routerConfig must be provided");
+    } else if (apiKey && routerConfig) {
+      setWarning("Both apiKey and routerConfig provided, using routerConfig for API calls");
+    }
+  }, [apiKey, routerConfig]);
 
   // Refs
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   
-  // Theme object from configuration
-  const themeConfig: PGPTThemeConfig = THEME_CONFIGS[currentTheme] || THEME_CONFIGS.blue;
+  // Get theme configuration based on appearance mode
+  const isDarkMode = appearance === APPEARANCE_MODES.DARK;
+  
+  // Theme object from configuration with dark mode support
+  const baseThemeConfig: PGPTThemeConfig = THEME_CONFIGS[currentTheme] || THEME_CONFIGS.blue;
+  const themeConfig: PGPTThemeConfig = isDarkMode && baseThemeConfig.darkMode 
+    ? baseThemeConfig.darkMode 
+    : baseThemeConfig;
 
-  // Position styles
-  const positionClasses = {
-    'bottom-right': 'bottom-4 right-4',
-    'bottom-left': 'bottom-4 left-4',
-    'top-right': 'top-4 right-4',
+  // Check for custom position or predefined position
+  const hasCustomPosition = position && typeof position === 'object';
+  const customPos = hasCustomPosition ? position as CustomPosition : null;
+  const positionType = !hasCustomPosition ? position as PositionType : 'custom';
+
+  // Position styles and classes for the button
+  const positionClasses: Record<string, string> = {
     'top-left': 'top-4 left-4',
+    'top-right': 'top-4 right-4',
+    'bottom-left': 'bottom-4 left-4',
+    'bottom-right': 'bottom-4 right-4',
+    'center': 'top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
+    'fixed': 'top-4 right-1/2 transform translate-x-1/2',
   };
 
-  // Get position CSS properties based on position string
-  const getPositionStyles = () => {
-    const posStyles: {[key: string]: string} = {};
-    
-    if (position.includes('bottom')) {
-      posStyles.bottom = '13rem';
-    } else {
-      posStyles.top = '6rem';
+  // Generate storage key based on theme and provider
+  const getStorageKey = () => {
+    return storage.key || `pgpt-messages-${currentTheme}-${currentProvider}`;
+  };
+
+  // Custom storage handlers
+  const storageHandlers = {
+    getItem: (key: string): string | null => {
+      if (storage.type === STORAGE_TYPES.CUSTOM && storage.getItem) {
+        const result = storage.getItem(key);
+        // Handle both synchronous and Promise return types
+        if (result instanceof Promise) {
+          // For async storage, we'll return null and handle the Promise elsewhere
+          result.then(value => {
+            // This would need to be handled by the component
+          }).catch(err => {
+            console.error("Error retrieving from custom storage:", err);
+          });
+          return null;
+        }
+        return result;
+      } else if (storage.type === STORAGE_TYPES.SESSION) {
+        return sessionStorage.getItem(key);
+      } else if (storage.type === STORAGE_TYPES.LOCAL) {
+        return localStorage.getItem(key);
+      }
+      return null;
+    },
+    setItem: (key: string, value: string): void => {
+      if (storage.type === STORAGE_TYPES.CUSTOM && storage.setItem) {
+        storage.setItem(key, value);
+      } else if (storage.type === STORAGE_TYPES.SESSION) {
+        sessionStorage.setItem(key, value);
+      } else if (storage.type === STORAGE_TYPES.LOCAL) {
+        localStorage.setItem(key, value);
+      }
+    }
+  };
+
+  // Get button position styles
+  const getButtonPositionStyles = (): React.CSSProperties => {
+    if (hasCustomPosition && customPos) {
+      return {
+        position: 'fixed',
+        left: typeof customPos.x === 'number' ? `${customPos.x}px` : customPos.x,
+        top: typeof customPos.y === 'number' ? `${customPos.y}px` : customPos.y,
+        zIndex: 50,
+      };
     }
     
-    if (position.includes('right')) {
-      posStyles.right = '0.6rem';
-    } else {
-      posStyles.left = '0.6rem';
+    if (positionType === 'left-full-height' || positionType === 'right-full-height') {
+      return {
+        position: 'fixed',
+        [positionType === 'left-full-height' ? 'left' : 'right']: '4px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        zIndex: 50,
+      };
     }
     
-    return posStyles;
+    if (positionType === 'top-full-width' || positionType === 'bottom-full-width') {
+      return {
+        position: 'fixed',
+        [positionType === 'top-full-width' ? 'top' : 'bottom']: '4px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        zIndex: 50,
+      };
+    }
+    
+    if (positionType === 'fullscreen') {
+      return {
+        position: 'fixed',
+        bottom: '20px',
+        right: '20px',
+        zIndex: 60,
+      };
+    }
+    
+    return {}; // Default case for standard positions
+  };
+
+  // Get chat window position styles based on icon position
+  const getChatWindowPositionStyles = (): React.CSSProperties => {
+    // For center position, always show popup in center regardless of button position
+    if (positionType === 'center') {
+      return {
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '80vw',
+        maxWidth: '600px',
+        height: '80vh',
+      };
+    }
+    
+    // Custom position with offsets
+    if (hasCustomPosition && customPos) {
+      const offsetX = customPos.offsetX || 0;
+      const offsetY = customPos.offsetY || 0;
+      
+      return {
+        position: 'fixed',
+        left: typeof customPos.x === 'number' 
+          ? `calc(${customPos.x}px + ${typeof offsetX === 'number' ? `${offsetX}px` : offsetX})` 
+          : `calc(${customPos.x} + ${typeof offsetX === 'number' ? `${offsetX}px` : offsetX})`,
+        top: typeof customPos.y === 'number' 
+          ? `calc(${customPos.y}px + ${typeof offsetY === 'number' ? `${offsetY}px` : offsetY})` 
+          : `calc(${customPos.y} + ${typeof offsetY === 'number' ? `${offsetY}px` : offsetY})`,
+        width: chatLayout === 'popup' ? '80vw' : '350px',
+        height: chatLayout === 'popup' ? '80vh' : styles?.chatContainer?.minHeight || fixedHeight,
+      };
+    }
+    
+    // Position-specific styles
+    switch (positionType) {
+      case 'fixed':
+        return {
+          position: 'fixed',
+          top: '80px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '80vw',
+          maxWidth: '600px',
+          height: '70vh',
+        };
+        
+      case 'left-full-height':
+        return {
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '350px',
+          height: '100vh',
+          borderRadius: 0,
+        };
+        
+      case 'right-full-height':
+        return {
+          position: 'fixed',
+          top: 0,
+          right: 0,
+          width: '350px',
+          height: '100vh',
+          borderRadius: 0,
+        };
+        
+      case 'top-full-width':
+        return {
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '350px',
+          borderRadius: 0,
+        };
+        
+      case 'bottom-full-width':
+        return {
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          width: '100vw',
+          height: '350px',
+          borderRadius: 0,
+        };
+        
+      case 'fullscreen':
+        return {
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          borderRadius: 0,
+          zIndex: 50,
+        };
+        
+      case 'top-left':
+        return {
+          position: 'fixed',
+          top: '60px',
+          left: '20px',
+          width: '350px',
+          height: styles?.chatContainer?.minHeight || fixedHeight,
+        };
+        
+      case 'top-right':
+        return {
+          position: 'fixed',
+          top: '60px',
+          right: '20px',
+          width: '350px',
+          height: styles?.chatContainer?.minHeight || fixedHeight,
+        };
+        
+      case 'bottom-left':
+        return {
+          position: 'fixed',
+          bottom: '60px',
+          left: '20px',
+          width: '350px',
+          height: styles?.chatContainer?.minHeight || fixedHeight,
+        };
+        
+      case 'bottom-right':
+        return {
+          position: 'fixed',
+          bottom: '60px',
+          right: '20px',
+          width: '350px',
+          height: styles?.chatContainer?.minHeight || fixedHeight,
+        };
+        
+      default:
+        return {
+          position: 'fixed',
+          bottom: '60px',
+          right: '20px',
+          width: '350px',
+          height: styles?.chatContainer?.minHeight || fixedHeight,
+        };
+    }
   };
 
   // Button size classes
@@ -126,53 +533,22 @@ const PGPT: React.FC<PGPTProps> = ({
     'large': 'h-14 w-14',
   };
 
-  // Chat layout styles with proper type assertions
-  const chatLayoutStyles: {[key: string]: React.CSSProperties} = {
-    popup: {
-      width: "80vw",
-      height: "80vh",
-      maxWidth: "1200px",
-      position: "fixed",
-      top: "50%",
-      left: "50%",
-      transform: isOpen ? "translate(-50%, -50%) scale(1)" : "translate(-50%, -50%) scale(0.5)",
-      transition: "all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55)",
-    },
-    sidebar: {
-      width: "400px",
-      height: "100vh",
-      maxWidth: "100vw",
-      transform: isOpen 
-        ? "translateX(0)" 
-        : position.includes('right') 
-          ? "translateX(420px)" 
-          : "translateX(-420px)",
-      transition: "transform 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55)",
-      right: position.includes('right') ? '0' : 'auto',
-      left: position.includes('left') ? '0' : 'auto',
-      top: '0',
-      bottom: '0',
-      borderRadius: '0',
-      position: "fixed"
-    },
-    normal: {
-      width: "100%",
-      maxWidth: "400px",
-      minHeight: customStyles?.chatContainer?.minHeight || fixedHeight,
-      maxHeight: customStyles?.chatContainer?.maxHeight || fixedHeight,
-      transform: isOpen 
-        ? "translateY(0) scale(1)" 
-        : "translateY(20px) scale(0.95)",
-      opacity: isOpen ? "1" : "0",
-      transition: "all 0.2s ease-in-out",
-      position: "fixed",
-      ...getPositionStyles()
-    }
-  };
+  // Should button be hidden based on position
+  const shouldHideButton = positionType === 'fullscreen' && isOpen;
 
-  // Load saved messages from localStorage on initial load
+  // Load saved messages from storage on initial load
   useEffect(() => {
-    const savedMessages = localStorage.getItem(`pgpt-messages-${currentTheme}-${currentProvider}`);
+    if (storage.type === STORAGE_TYPES.NONE) {
+      // Don't load messages if storage is disabled
+      if (contentConfig.welcomeMessage) {
+        setMessages([{ role: 'bot', content: contentConfig.welcomeMessage }]);
+      }
+      return;
+    }
+    
+    const storageKey = getStorageKey();
+    const savedMessages = storageHandlers.getItem(storageKey);
+    
     if (savedMessages) {
       try {
         const parsedMessages = JSON.parse(savedMessages);
@@ -187,8 +563,8 @@ const PGPT: React.FC<PGPTProps> = ({
     }
     
     // If no valid saved messages, set welcome message
-    if (welcomeMessage && !messages.length) {
-      setMessages([{ role: 'bot', content: welcomeMessage }]);
+    if (contentConfig.welcomeMessage) {
+      setMessages([{ role: 'bot', content: contentConfig.welcomeMessage }]);
     }
   }, []);
 
@@ -201,7 +577,9 @@ const PGPT: React.FC<PGPTProps> = ({
   useEffect(() => {
     if (isOpen && !isClosing) {
       setTimeout(() => {
-        inputRef.current?.focus();
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
       }, 300);
     }
   }, [isOpen, isClosing]);
@@ -217,18 +595,58 @@ const PGPT: React.FC<PGPTProps> = ({
     }
   }, [error, warning]);
 
+  // Update last bot message index when new message is added
+  useEffect(() => {
+    const reversedIndex = [...messages].reverse().findIndex(msg => msg.role === 'bot');
+    if (reversedIndex !== -1) {
+      setLastBotMessageIndex(messages.length - 1 - reversedIndex);
+    }
+  }, [messages]);
+
+  // Handle opening and closing the chat
   const toggleChat = () => {
     if (isOpen) {
-      setIsClosing(true);
-      setTimeout(() => {
-        setIsOpen(false);
-        setIsClosing(false);
-      }, 300);
+      closeChat();
     } else {
-      setIsOpen(true);
+      openChat();
+    }
+  };
+  
+  // Open chat handler
+  const openChat = () => {
+    setIsOpen(true);
+    if (onOpen) onOpen();
+  };
+  
+  // Close chat handler
+  const closeChat = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+      if (onClose) onClose();
+    }, 300);
+  };
+  
+  // Handle mouse enter for hover trigger
+  const handleMouseEnter = () => {
+    if (openTrigger === OPEN_TRIGGERS.HOVER && !isOpen) {
+      const timeout = setTimeout(() => {
+        openChat();
+      }, 300); // Add slight delay to prevent accidental openings
+      setHoverTimeout(timeout);
+    }
+  };
+  
+  // Handle mouse leave for hover trigger
+  const handleMouseLeave = () => {
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout);
+      setHoverTimeout(null);
     }
   };
 
+  // Send message handler
   const handleSendMessage = async () => {
     if (!input.trim()) return;
 
@@ -237,7 +655,7 @@ const PGPT: React.FC<PGPTProps> = ({
     setWarning(null);
 
     // Get system message based on role or use custom one if provided
-    const systemMsg = systemMessage || DEFAULT_SYSTEM_MESSAGES[currentRole] || DEFAULT_SYSTEM_MESSAGES.assistant;
+    const systemMsg = contentConfig.systemMessage || DEFAULT_SYSTEM_MESSAGES[currentRole] || DEFAULT_SYSTEM_MESSAGES.assistant;
     
     // Add rules if provided
     let finalSystemMsg = systemMsg;
@@ -247,6 +665,11 @@ const PGPT: React.FC<PGPTProps> = ({
     
     // Create user message
     const userMessage: ChatMessage = { role: "user", content: input };
+    
+    // Call onSendMessage callback if provided
+    if (onSendMessage) {
+      onSendMessage(input);
+    }
     
     // Add system message if this is the first user message
     const updatedMessages = [...messages];
@@ -261,25 +684,39 @@ const PGPT: React.FC<PGPTProps> = ({
     setLoading(true);
 
     try {
-      // Send message to API
-      const response : ChatMessage | null = await sendMessage({
-        provider: currentProvider,
-        apiKey,
+      // Send message to API using either direct API key or REST API route
+      const response: ChatMessage | null = await sendMessage({
+        provider: useRestApi ? "" : currentProvider,
+        apiKey: apiKey || "",
         model: currentModel,
         messages: updatedMessages,
         temperature: 0.7,
-        maxTokens: 1000
+        maxTokens: routerConfig?.maxTokens || 1000,
+        routerConfig: routerConfig ? {
+          route: routerConfig.endpoint,
+          model: currentModel,
+          tokens: routerConfig.maxTokens,
+          schema: routerConfig.customPayload
+        } : undefined
       });
 
       if (response) {
         // Add bot response to conversation
         setMessages(prev => [...prev, response]);
         
-        // Save messages to localStorage
-        localStorage.setItem(
-          `pgpt-messages-${currentTheme}-${currentProvider}`,
-          JSON.stringify([...messages, userMessage, response])
-        );
+        // Call onReceiveMessage callback if provided
+        if (onReceiveMessage) {
+          onReceiveMessage(response);
+        }
+        
+        // Save messages to storage if enabled
+        if (storage.type !== STORAGE_TYPES.NONE) {
+          const storageKey = getStorageKey();
+          storageHandlers.setItem(
+            storageKey,
+            JSON.stringify([...updatedMessages, response])
+          );
+        }
       } else {
         // Handle error
         setError("Failed to get response from AI");
@@ -305,67 +742,34 @@ const PGPT: React.FC<PGPTProps> = ({
 
   // Chat button in corner
   const renderChatButton = () => (
-    <button
-      onClick={toggleChat}
-      className={`${buttonSizeClasses[buttonSize]} rounded-full items-center justify-center ${themeConfig.primary} hover:opacity-90 transition-all duration-300 shadow-lg cursor-pointer outline-none focus:shadow-xl ${isOpen ? 'hidden transition-[display]' : 'flex transition-[display]'}`}
-      aria-label={isOpen ? "Close chat" : "Open chat"}
-      style={customStyles.chatButton}
-    >
-      {isOpen ? (
-        <FaTimes className="text-white h-1/2 w-1/2" />
-      ) : (
-        <>
-          {!showLabelWithLogo ? ( customLogo? customLogo : <SiRobotframework className="text-white h-3/5 w-3/5" />) : (
-            <span className=" text-white text-xl font-bold whitespace-nowrap">{title?.toUpperCase()[0]}</span>
-          )}
-        </>
-      )}
-    </button>
+    <ChatButton
+      ref={buttonRef}
+      isOpen={isOpen}
+      onClick={openTrigger === OPEN_TRIGGERS.CLICK ? toggleChat : openChat}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      buttonSize={buttonSize}
+      buttonStyle={buttonStyle}
+      themeConfig={themeConfig}
+      logo={logo}
+      showLabel={showLabelWithLogo}
+      label={contentConfig.title}
+      className={classes.button || ''}
+      style={styles.chatButton}
+    />
   );
 
   // Chat header
   const renderHeader = () => (
-    <div 
-      className={`p-4 ${themeConfig.header} border-b ${themeConfig.border} ${themeConfig.text}`}
-      style={customStyles.header}
-    >
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <div 
-            className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center"
-            style={customStyles.logo}
-          >
-            {customLogo ? customLogo : <SiRobotframework className="text-white h-4 w-4" />}
-          </div>
-          <div>
-            <h2 
-              className="font-bold text-lg leading-tight"
-              style={customStyles.title}
-            >
-              {title}
-            </h2>
-            <p 
-              className={`text-xs ${themeConfig.secondaryText}`}
-              style={customStyles.subtitle}
-            >
-              {subtitle}
-            </p>
-          </div>
-        </div>
-        <div className="flex space-x-2">
-          {isCloseable ?
-          <button 
-          onClick={toggleChat} 
-          className={`p-1.5 rounded-full hover:bg-opacity-20 hover:bg-gray-700 transition-colors cursor-pointer text-gray-200 outline-none ${themeConfig.primary}`}
-          aria-label="Close"
-        >
-          <FaTimes />
-        </button>
-          : 
-          <></>}
-        </div>
-      </div>
-    </div>
+    <ChatHeader
+      title={contentConfig.title}
+      subtitle={contentConfig.subtitle}
+      onClose={closeChat}
+      themeConfig={themeConfig}
+      isCloseable={isCloseable}
+      logo={logo}
+      className={classes.header || ''}
+    />
   );
 
   // Error or warning notification
@@ -378,7 +782,7 @@ const PGPT: React.FC<PGPTProps> = ({
     
     return (
       <div 
-        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 px-4 py-3 rounded-lg shadow-lg text-white flex items-center"
+        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 px-4 py-3 rounded-xl overflow-hidden shadow-lg text-white flex items-center"
         style={{ backgroundColor: bgColor }}
       >
         <FaExclamationTriangle className="mr-2" />
@@ -391,58 +795,48 @@ const PGPT: React.FC<PGPTProps> = ({
   const renderMessages = () => (
     <div 
       ref={chatContainerRef}
-      className={`flex-1 overflow-y-auto p-4 space-y-3 relative`}
+      className={`flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-3 relative ${classes.body || ''}`}
       style={{
         scrollbarWidth: 'thin',
         scrollbarColor: `${themeConfig.scrollThumb} ${themeConfig.scrollTrack}`,
-        minHeight: chatLayout === 'normal' ? fixedHeight : minHeight,
-        maxHeight: chatLayout === 'sidebar' ? '100%' : chatLayout === "normal" ? "400px" : chatLayout === "popup" ? "80vh" : maxHeight,
-        ...customStyles.body
+        minHeight: chatLayout === 'normal' ? fixedHeight : maxHeight,
+        maxHeight: chatLayout === 'sidebar' ? '100%' : chatLayout === "normal" ? "400px" : chatLayout === "popup" ? "400px" : maxHeight,
+        ...styles.body
       }}
     >
       {renderNotification()}
       
       {messages.filter(msg => msg.role !== 'system').map((msg, idx) => (
-        <div
+        <ChatBubble
           key={idx}
-          className={`p-3 rounded-lg text-sm max-w-[80%] ${
-            msg.role === "user"
-              ? `${themeConfig.user} self-end ml-auto ${themeConfig.shadow}`
-              : `${themeConfig.bot} self-start mr-auto ${themeConfig.shadow}`
-          }`}
-          style={msg.role === "user" ? customStyles.userBubble : customStyles.botBubble}
-        >
-          <div className="flex items-center mb-1">
-            <span className="mr-2">
-              {msg.role === "user" ? (
-                <FaUser className="h-3 w-3 opacity-80" />
-              ) : (
-                <SiRobotframework className="h-3 w-3 opacity-80" />
-              )}
-            </span>
-            <strong className="text-xs opacity-80">
-              {msg.role === "user" ? "You" : title}
-            </strong>
-          </div>
-          {msg.role === "bot" && shouldUseTypingAnimation ? (
-            <TypewriterText text={msg.content} speed={15} />
-          ) : (
-            <div className="whitespace-pre-wrap">{msg.content}</div>
-          )}
-        </div>
+          role={msg.role as 'user' | 'bot'}
+          content={msg.content}
+          username={msg.role === 'user' ? 'You' : contentConfig.title}
+          themeConfig={themeConfig}
+          bubbleStyle={bubbleStyle}
+          className={msg.role === 'user' ? classes.userBubble || '' : classes.botBubble || ''}
+          isTyping={shouldUseTypingAnimation}
+          hasAnimation={bubbleAnimation}
+          typingSpeed={15}
+          iconComponent={msg.role === 'user' ? undefined : logo ? logo : undefined}
+          style={msg.role === 'user' ? styles.userBubble : styles.botBubble}
+          isLastMessage={idx === lastBotMessageIndex}
+        />
       ))}
 
       {loading && (
         <div className={`p-3 rounded-lg ${themeConfig.bot} self-start mr-auto text-sm ${themeConfig.shadow}`}>
           <div className="flex items-center mb-1">
-            <SiRobotframework className="h-3 w-3 opacity-80 mr-2" />
-            <strong className="text-xs opacity-80">{title}</strong>
+            <span className="mr-2">
+              {logo || <SiRobotframework className="h-3 w-3 opacity-80" />}
+            </span>
+            <strong className="text-xs opacity-80">{contentConfig.title}</strong>
           </div>
-          <div className="flex space-x-1 items-center">
-            <div className="h-2 w-2 rounded-full bg-current animate-bounce delay-0"></div>
-            <div className="h-2 w-2 rounded-full bg-current animate-bounce delay-150"></div>
-            <div className="h-2 w-2 rounded-full bg-current animate-bounce delay-300"></div>
-          </div>
+          <LoadingAnimation 
+            type={loadingAnimation} 
+            color="currentColor" 
+            size="small"
+          />
         </div>
       )}
       
@@ -453,77 +847,59 @@ const PGPT: React.FC<PGPTProps> = ({
 
   // Chat input area
   const renderFooter = () => (
-    <div className={`p-2`}>
-      <div className={`flex flex-col rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden p-2 pb-1 ${themeConfig.footer} border-t ${themeConfig.border}`}
-      style={customStyles.footer}>
-        <div className="flex items-end justify-between">
-          <textarea
-            ref={inputRef}
-            value={input} 
-            onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && e.ctrlKey) {
-              e.preventDefault();
-              handleSendMessage();
-            }
-          }}
-          placeholder={loading ? "AI is responding..." : placeholder}
-          className={`w-full resize-none p-2 text-base outline-none flex-grow`}
-          style={{ 
-            color: themeConfig.inputText,
-            minHeight: '50px',
-            maxHeight: '55px',
-            ...customStyles.input
-          }}
-          rows={3}
-          disabled={loading}
-        ></textarea>
-          <button
-            onClick={handleSendMessage}
-            disabled={loading || !input.trim()}
-            className={`flex justify-center items-center rounded-lg h-8 w-8 transition-colors cursor-pointer ${
-              !input.trim() && !loading
-                ? `${themeConfig.primary} opacity-50 cursor-not-allowed` 
-                : loading
-                  ? 'bg-red-600 hover:bg-red-700'
-                  : `${themeConfig.primary} hover:opacity-90`
-            } text-white`}
-            aria-label="Send message"
-            style={customStyles.sendButton}
-          >
-            {loading ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="6" y="6" width="12" height="12"></rect>
-              </svg>
-            ) : (
-              <FaPaperPlane className="h-4 w-4" />
-            )}
-          </button>
-        </div>
-        <div className="py-1"/>
-        <div className="flex justify-between items-center pt-1 border-t border-gray-200 dark:border-gray-700">
-          <div className={`text-xs ${themeConfig.secondaryText}`}>
-             <div>{DEFAULT_FOOTER_TEXT.poweredBy}</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ChatFooter
+      input={input}
+      setInput={setInput}
+      handleSendMessage={handleSendMessage}
+      loading={loading}
+      placeholder={contentConfig.placeholder}
+      themeConfig={themeConfig}
+      useTextarea={useTextarea}
+      className={classes.footer || ''}
+      inputStyle={styles.input}
+      buttonStyle={styles.sendButton}
+      showSendButton={true}
+      autofocus={true}
+    />
   );
 
   return (
-    <div className="pgpt-container">
-      {/* Chat toggle button */}
-      <div className={`fixed ${positionClasses[position]} z-50`}>
+    <div className={`pgpt-container ${classes.container || ''}`}>
+      {/* Chat toggle button - always visible */}
+      <div 
+        className={!hasCustomPosition && 
+          positionType !== 'left-full-height' && 
+          positionType !== 'right-full-height' && 
+          positionType !== 'top-full-width' && 
+          positionType !== 'bottom-full-width' 
+            ? `fixed ${positionClasses[positionType as keyof typeof positionClasses] || ''} z-50` 
+            : ''
+        } 
+        style={hasCustomPosition || 
+          positionType === 'left-full-height' || 
+          positionType === 'right-full-height' || 
+          positionType === 'top-full-width' || 
+          positionType === 'bottom-full-width' 
+            ? getButtonPositionStyles() 
+            : {}
+        }
+      >
         {renderChatButton()}
       </div>
       
       {/* Chat window */}
       {(isOpen || isClosing) && (
         <div 
-          className={`fixed z-50 border rounded-lg ${themeConfig.border} ${themeConfig.shadow}`}
-          style={{...chatLayoutStyles[chatLayout], ...customStyles.chatContainer,} }
+          className={`fixed z-40 border ${themeConfig.border} ${themeConfig.shadow} ${positionType === 'fullscreen' ? 'rounded-none' : 'rounded-xl'}`}
+          style={{
+            ...getChatWindowPositionStyles(),
+            ...styles.chatContainer,
+            transform: isOpen ? undefined : 'scale(0.95)',
+            opacity: isOpen ? 1 : 0,
+            transition: 'all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55)'
+          }}
         >
-          <div className={`flex flex-col h-full rounded-lg ${themeConfig.body} overflow-hidden`}>
+          <div className={`flex flex-col h-full ${positionType === 'fullscreen' ? 'rounded-none' : 'rounded-xl'} ${themeConfig.body} overflow-hidden`}>
             {renderHeader()}
             {renderMessages()}
             {renderFooter()}

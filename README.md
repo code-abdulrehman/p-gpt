@@ -25,6 +25,8 @@ yarn add p-gpt
 
 ### Basic Usage
 
+#### With Direct API Key
+
 ```jsx
 import { PGPT } from 'p-gpt';
 import 'p-gpt/dist/index.css'; // Import styles
@@ -34,10 +36,35 @@ function App() {
     <div className="App">
       <h1>My Website</h1>
       
-      {/* Add the chatbot anywhere in your app */}
+      {/* Add the chatbot with direct OpenAI API key */}
       <PGPT 
         apiKey="your-openai-api-key" 
         model="gpt-4" // or gpt-3.5-turbo, etc.
+      />
+    </div>
+  );
+}
+```
+
+#### With Custom REST API Endpoint
+
+```jsx
+import { PGPT } from 'p-gpt';
+import 'p-gpt/dist/index.css'; // Import styles
+
+function App() {
+  return (
+    <div className="App">
+      <h1>My Website</h1>
+      
+      {/* Add the chatbot with your custom backend API endpoint */}
+      <PGPT 
+        routerConfig={{
+          route: "https://your-backend-api.com/chat",
+          model: "custom-model", // Optional
+          tokens: 2000 // Optional max tokens
+        }}
+        title="Chat Assistant"
       />
     </div>
   );
@@ -48,7 +75,9 @@ function App() {
 
 - **Beautiful UI Themes** - 10+ pre-designed themes (dark, light, blue, purple, etc.)
 - **Multiple Layouts** - Choose between popup, sidebar, or normal chat window
-- **Smart AI Responses** - Direct integration with OpenAI's models
+- **Smart AI Responses** - Direct integration with OpenAI's models or your custom backend
+- **Flexible Integration** - Use direct API keys or your custom backend REST API
+- **Custom Positioning** - Place the chat button with standard positions or exact coordinates
 - **Typing Effect** - Optional realistic typing animation for responses
 - **Customizable** - Easily modify appearance, position, and behavior
 - **Conversation Persistence** - Auto-saves chats in browser storage
@@ -60,13 +89,15 @@ function App() {
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `apiKey` | string | **Required.** Your OpenAI API key |
-| `model` | string | OpenAI model to use (default: first available) |
+| `apiKey` | string | Your OpenAI API key (required if not using `routerConfig`) |
+| `routerConfig` | object | Router configuration for custom API endpoint (required if not using `apiKey`) |
+| `model` | string | OpenAI model to use (only needed with `apiKey`) |
 | `theme` | string | UI theme (default: "blue") |
-| `position` | string | Button position (default: "bottom-right") |
+| `position` | string or object | Button position (default: "bottom-right") |
 | `title` | string | Chat title (default: "PGPT Assistant") |
+| `defaultOpen` | boolean | Whether the chat window opens automatically (default: false) |
 
-### Example with Common Options
+### Example with Direct API Key
 
 ```jsx
 <PGPT 
@@ -75,6 +106,27 @@ function App() {
   title="Customer Support"
   subtitle="How can we help?"
   theme="dark"
+  position="bottom-right"
+  enableTypingAnimation={true}
+/>
+```
+
+### Example with Custom REST API
+
+```jsx
+<PGPT 
+  routerConfig={{
+    route: "https://your-backend-api.com/chat",
+    model: "gpt-4",
+    tokens: 2000,
+    schema: {
+      // Optional custom payload structure
+      customField: "value"
+    }
+  }}
+  title="Customer Support"
+  subtitle="How can we help?"
+  theme="green"
   position="bottom-right"
   enableTypingAnimation={true}
 />
@@ -90,6 +142,145 @@ Choose from these beautiful themes:
 
 ```jsx
 <PGPT theme="purple" />
+```
+
+## 🔌 Integration Options
+
+### Direct LLM Integration
+
+Use this option to directly integrate with OpenAI's API using your own API key:
+
+```jsx
+<PGPT 
+  apiKey="your-openai-api-key"
+  model="gpt-4o" // or any other supported model
+  llmProvider="OpenAI"
+/>
+```
+
+### Custom Backend Integration
+
+Use this option to route requests through your own backend service with advanced configuration:
+
+```jsx
+<PGPT 
+  routerConfig={{
+    route: "https://your-api.com/chat",
+    model: "custom-model", // Optional - model to use
+    tokens: 2000, // Optional - max tokens to generate
+    schema: {
+      // Optional - custom payload schema
+      customField: "value",
+      otherSettings: true
+    }
+  }}
+/>
+```
+
+Your backend will receive messages in this format (or your custom schema):
+```json
+{
+  "messages": [
+    {"role": "system", "content": "You are a helpful assistant..."},
+    {"role": "user", "content": "Hello, how are you?"}
+  ],
+  "model": "custom-model",
+  "temperature": 0.7,
+  "max_tokens": 2000,
+  "customField": "value",
+  "otherSettings": true
+}
+```
+
+Your backend should respond with:
+```json
+{
+  "role": "bot",
+  "content": "I'm doing well, thank you for asking! How can I assist you today?"
+}
+```
+
+## 📍 Positioning Options
+
+### Standard Corner Positions
+
+Use one of four predefined corner positions:
+
+```jsx
+<PGPT position="bottom-right" /> // Default
+<PGPT position="bottom-left" />
+<PGPT position="top-right" />
+<PGPT position="top-left" />
+```
+
+### Special Positions
+
+Additional predefined positions for more flexible layouts:
+
+```jsx
+// Centered in the middle of the screen
+<PGPT position="center" />
+
+// Fixed at the top, horizontally centered
+<PGPT position="fixed" />
+
+// Full-height sidebar on the left
+<PGPT position="left-full-height" />
+
+// Full-height sidebar on the right
+<PGPT position="right-full-height" />
+
+// Full-width bar at the top
+<PGPT position="top-full-width" />
+
+// Full-width bar at the bottom
+<PGPT position="bottom-full-width" />
+
+// Fullscreen mode (covers entire viewport)
+<PGPT position="fullscreen" />
+```
+
+### Custom Coordinates
+
+For precise positioning, provide x and y coordinates with optional offsets:
+
+```jsx
+// Basic positioning with exact coordinates
+<PGPT position={{ x: "20px", y: "50px" }} />
+
+// Using relative units
+<PGPT position={{ x: "5vw", y: "calc(100vh - 100px)" }} />
+
+// With numeric values (converted to pixels)
+<PGPT position={{ x: 20, y: 50 }} />
+
+// With offsets for chat window positioning
+<PGPT 
+  position={{ 
+    x: "50vw",               // Button X position
+    y: "50vh",               // Button Y position
+    offsetX: "-200px",       // Chat window X offset from button
+    offsetY: "100px"         // Chat window Y offset from button
+  }} 
+/>
+```
+
+### Position Behavior Logic
+
+- **Corner Positions**: When in a corner, the chat window opens with a slight offset from the button
+- **Full-height/width**: These layouts stretch the chat window to fill the entire height or width
+- **Fullscreen**: Takes over the entire viewport, ideal for mobile or focus mode
+- **Custom**: Allows complete control over both button and chat window positioning
+
+### Auto-Open Chat
+
+To have the chat window open automatically when the page loads:
+
+```jsx
+<PGPT 
+  defaultOpen={true}
+  chatLayout="popup" // Works best with popup layout
+/>
 ```
 
 ## 💼 Customer Support Integration
@@ -195,14 +386,15 @@ Compatible with all modern browsers:
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `apiKey` | string | - | OpenAI API key (required) |
-| `llmProvider` | string | "openai" | LLM provider |
-| `model` | string | (first available) | OpenAI model name |
+| `apiKey` | string | - | OpenAI API key (required if not using `routerConfig`) |
+| `routerConfig` | object | - | Router configuration for custom API endpoint (required if not using `apiKey`) |
+| `llmProvider` | string | "openai" | LLM provider (only used with `apiKey`) |
+| `model` | string | (first available) | OpenAI model name (only used with `apiKey`) |
 | `placeholder` | string | "Type your message here..." | Input placeholder text |
 | `title` | string | "PGPT Assistant" | Title displayed in header |
 | `subtitle` | string | "AI-powered chat assistant" | Subtitle displayed in header |
 | `theme` | string | "blue" | UI theme |
-| `position` | string | "bottom-right" | Position of chat button |
+| `position` | string or object | "bottom-right" | Position of chat button and window. Options: 'top-left', 'top-right', 'bottom-left', 'bottom-right', 'center', 'fixed', 'left-full-height', 'right-full-height', 'top-full-width', 'bottom-full-width', 'fullscreen', or a custom object `{x, y, offsetX?, offsetY?}` |
 | `welcomeMessage` | string | "Hello! How can I help you today?" | Initial message from bot |
 | `buttonSize` | string | "medium" | Size of chat button |
 | `initiallyOpen` | boolean | false | Whether chat is initially open |
@@ -220,6 +412,7 @@ Compatible with all modern browsers:
 | `warningColor` | string | "#f59e0b" | Color of warning notifications |
 | `isCloseable` | boolean | true | Whether chat can be closed |
 | `enableTypingAnimation` | boolean | false | Enable typing animation |
+| `defaultOpen` | boolean | false | Open chat window automatically on load |
 
 ## 🔗 Links
 

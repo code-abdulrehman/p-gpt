@@ -28,7 +28,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/code-abdulrehman/p-gpt"
+    "url": "git+https://github.com/code-abdulrehman/p-gpt.git"
   },
   "homepage": "https://github.com/code-abdulrehman/p-gpt#readme",
   "bugs": {
@@ -45,6 +45,8 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.0.17",
     "axios": "^1.8.4",
+    "prism-react-renderer": "^2.4.1",
+    "prismjs": "^1.30.0",
     "react": "^19.1.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
