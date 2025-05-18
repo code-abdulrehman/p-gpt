@@ -1,31 +1,36 @@
-# p-gpt
+# P-GPT: React AI Chat Assistant
 
-A modern, customizable React chatbot component with beautiful UI themes and OpenAI integration. Add an AI-powered chat assistant to your app in minutes!
+A modern, customizable React chat component with multiple themes, layouts, and OpenAI integration. Add an AI-powered chat assistant to your React app in minutes!
 
 ![P-GPT Demo](ss2.png)
 
-## ✨ Quick Start
+## 🚀 Features
 
-### Installation
+- **Beautiful UI Themes** - 15+ themes with light/dark mode variants
+- **Responsive Layouts** - Popup, sidebar, or inline chat windows
+- **Smart AI Integration** - Connect to OpenAI or your custom backend API
+- **Highly Customizable** - Appearance, position, behavior, and more
+- **Dark Mode Support** - All themes come with dark mode variants
+- **Conversation History** - Auto-saves chats in browser storage
+- **Typing Animation** - Optional realistic typing effect for responses
+- **Mobile Responsive** - Works great on all device sizes
 
-Install the package using pnpm (recommended)
+## 📦 Installation
+
 ```bash
+# With npm
+npm install p-gpt
+
+# With yarn
+yarn add p-gpt
+
+# With pnpm (recommended)
 pnpm add p-gpt
 ```
 
-or with npm
-```bash
-npm install p-gpt
-```
+## 🔧 Quick Start
 
-or with yarn
-```bash
-yarn add p-gpt
-```
-
-### Basic Usage
-
-#### With Direct API Key
+### Basic Usage with OpenAI
 
 ```jsx
 import { PGPT } from 'p-gpt';
@@ -34,150 +39,127 @@ import 'p-gpt/dist/index.css'; // Import styles
 function App() {
   return (
     <div className="App">
-      <h1>My Website</h1>
-      
-      {/* Add the chatbot with direct OpenAI API key */}
       <PGPT 
         apiKey="your-openai-api-key" 
-        model="gpt-4" // or gpt-3.5-turbo, etc.
+        model="gpt-4o" 
+        theme="chatgpt"
+        appearance="dark" // For dark mode
       />
     </div>
   );
 }
+
+export default App;
 ```
 
-#### With Custom REST API Endpoint
+### With Custom API Endpoint
 
 ```jsx
 import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/index.css'; // Import styles
+import 'p-gpt/dist/index.css';
 
 function App() {
   return (
     <div className="App">
-      <h1>My Website</h1>
-      
-      {/* Add the chatbot with your custom backend API endpoint */}
       <PGPT 
         routerConfig={{
-          route: "https://your-backend-api.com/chat",
-          model: "custom-model", // Optional
-          tokens: 2000 // Optional max tokens
+          endpoint: "https://your-api.com/chat",
+          maxTokens: 2000,
+          customPayload: {
+            // Optional custom payload
+            temperature: 0.7
+          }
         }}
-        title="Chat Assistant"
+        theme="gemini"
+        appearance="light"
       />
     </div>
   );
 }
-```
-
-## 🌟 Key Features
-
-- **Beautiful UI Themes** - 10+ pre-designed themes (dark, light, blue, purple, etc.)
-- **Multiple Layouts** - Choose between popup, sidebar, or normal chat window
-- **Smart AI Responses** - Direct integration with OpenAI's models or your custom backend
-- **Flexible Integration** - Use direct API keys or your custom backend REST API
-- **Custom Positioning** - Place the chat button with standard positions or exact coordinates
-- **Typing Effect** - Optional realistic typing animation for responses
-- **Customizable** - Easily modify appearance, position, and behavior
-- **Conversation Persistence** - Auto-saves chats in browser storage
-- **Mobile Responsive** - Works great on all device sizes
-
-## 🔧 Configuration
-
-### Essential Props
-
-| Prop | Type | Description |
-|------|------|-------------|
-| `apiKey` | string | Your OpenAI API key (required if not using `routerConfig`) |
-| `routerConfig` | object | Router configuration for custom API endpoint (required if not using `apiKey`) |
-| `model` | string | OpenAI model to use (only needed with `apiKey`) |
-| `theme` | string | UI theme (default: "blue") |
-| `position` | string or object | Button position (default: "bottom-right") |
-| `title` | string | Chat title (default: "PGPT Assistant") |
-| `defaultOpen` | boolean | Whether the chat window opens automatically (default: false) |
-
-### Example with Direct API Key
-
-```jsx
-<PGPT 
-  apiKey="your-openai-api-key" 
-  model="gpt-4"
-  title="Customer Support"
-  subtitle="How can we help?"
-  theme="dark"
-  position="bottom-right"
-  enableTypingAnimation={true}
-/>
-```
-
-### Example with Custom REST API
-
-```jsx
-<PGPT 
-  routerConfig={{
-    route: "https://your-backend-api.com/chat",
-    model: "gpt-4",
-    tokens: 2000,
-    schema: {
-      // Optional custom payload structure
-      customField: "value"
-    }
-  }}
-  title="Customer Support"
-  subtitle="How can we help?"
-  theme="green"
-  position="bottom-right"
-  enableTypingAnimation={true}
-/>
 ```
 
 ## 🎨 Themes
 
-Choose from these beautiful themes:
+P-GPT comes with beautiful pre-designed themes that support both light and dark modes:
 
-- `light` - Clean, light theme with blue accents
-- `dark` - Dark theme with purple accents
-- `blue`, `purple`, `green`, `amber`, `teal`, `indigo`, `red`, `pink`, `midnight`, `sunset`
+### Popular LLM Themes
+- `chatgpt` - OpenAI's ChatGPT theme (green accents)
+- `gemini` - Google's Gemini theme (purple accents)
+- `grok` - X's Grok theme (red/orange accents)
+- `claude` - Anthropic's Claude theme (purple accents)
+- `copilot` - GitHub Copilot theme (blue accents)
 
+### Color Themes
+- `light` / `dark` - Classic light and dark themes
+- `blue`, `purple`, `green`, `amber`, `teal`, `indigo`, `red`, `pink`
+- `midnight` - Deep black theme with blue accents
+- `sunset` - Orange-red gradient theme
+- `gold`, `silver`, `titanium`, `premium` - Metallic gradient themes
+
+Apply a theme with dark mode:
 ```jsx
-<PGPT theme="purple" />
+<PGPT 
+  theme="chatgpt"  
+  appearance="dark"  // "light" or "dark"
+/>
 ```
 
-## 🔌 Integration Options
+## 📍 Positioning
 
-### Direct LLM Integration
+Position your chat button and window anywhere on the screen:
 
-Use this option to directly integrate with OpenAI's API using your own API key:
+```jsx
+// Standard corner positions
+<PGPT position="bottom-right" /> // Default
+<PGPT position="bottom-left" />
+<PGPT position="top-right" />
+<PGPT position="top-left" />
+
+// Special layouts
+<PGPT position="center" />
+<PGPT position="left-full-height" />
+<PGPT position="right-full-height" />
+<PGPT position="fullscreen" />
+
+// Custom position with exact coordinates
+<PGPT 
+  position={{ 
+    x: "20px",   // or number like 20
+    y: "50px",   // or relative units like "5vh"
+    offsetX: "10px",  // Optional chat window offset
+    offsetY: "10px"   // Optional chat window offset
+  }} 
+/>
+```
+
+## 🧠 AI Configuration
+
+### OpenAI Integration
 
 ```jsx
 <PGPT 
   apiKey="your-openai-api-key"
-  model="gpt-4o" // or any other supported model
+  model="gpt-4o" // or "gpt-3.5-turbo", etc.
   llmProvider="OpenAI"
 />
 ```
 
-### Custom Backend Integration
-
-Use this option to route requests through your own backend service with advanced configuration:
+### Custom Backend
 
 ```jsx
 <PGPT 
   routerConfig={{
-    route: "https://your-api.com/chat",
-    model: "custom-model", // Optional - model to use
-    tokens: 2000, // Optional - max tokens to generate
-    schema: {
-      // Optional - custom payload schema
-      customField: "value",
-      otherSettings: true
-    }
+    endpoint: "https://your-api.com/chat",
+    headers: {
+      "Authorization": "Bearer your-auth-token",
+      "Content-Type": "application/json"
+    },
+    maxTokens: 2000
   }}
 />
 ```
 
-Your backend will receive messages in this format (or your custom schema):
+Your backend should accept messages in this format:
 ```json
 {
   "messages": [
@@ -186,13 +168,11 @@ Your backend will receive messages in this format (or your custom schema):
   ],
   "model": "custom-model",
   "temperature": 0.7,
-  "max_tokens": 2000,
-  "customField": "value",
-  "otherSettings": true
+  "max_tokens": 2000
 }
 ```
 
-Your backend should respond with:
+And respond with:
 ```json
 {
   "role": "bot",
@@ -200,234 +180,155 @@ Your backend should respond with:
 }
 ```
 
-## 📍 Positioning Options
+## 💅 Customization
 
-### Standard Corner Positions
-
-Use one of four predefined corner positions:
+Customize content, appearance, and behavior:
 
 ```jsx
-<PGPT position="bottom-right" /> // Default
-<PGPT position="bottom-left" />
-<PGPT position="top-right" />
-<PGPT position="top-left" />
-```
-
-### Special Positions
-
-Additional predefined positions for more flexible layouts:
-
-```jsx
-// Centered in the middle of the screen
-<PGPT position="center" />
-
-// Fixed at the top, horizontally centered
-<PGPT position="fixed" />
-
-// Full-height sidebar on the left
-<PGPT position="left-full-height" />
-
-// Full-height sidebar on the right
-<PGPT position="right-full-height" />
-
-// Full-width bar at the top
-<PGPT position="top-full-width" />
-
-// Full-width bar at the bottom
-<PGPT position="bottom-full-width" />
-
-// Fullscreen mode (covers entire viewport)
-<PGPT position="fullscreen" />
-```
-
-### Custom Coordinates
-
-For precise positioning, provide x and y coordinates with optional offsets:
-
-```jsx
-// Basic positioning with exact coordinates
-<PGPT position={{ x: "20px", y: "50px" }} />
-
-// Using relative units
-<PGPT position={{ x: "5vw", y: "calc(100vh - 100px)" }} />
-
-// With numeric values (converted to pixels)
-<PGPT position={{ x: 20, y: 50 }} />
-
-// With offsets for chat window positioning
 <PGPT 
-  position={{ 
-    x: "50vw",               // Button X position
-    y: "50vh",               // Button Y position
-    offsetX: "-200px",       // Chat window X offset from button
-    offsetY: "100px"         // Chat window Y offset from button
-  }} 
+  // Content
+  content={{
+    title: "Customer Support",
+    subtitle: "We're here to help!",
+    welcomeMessage: "Hello! How can I assist you today?",
+    placeholder: "Type your question here...",
+    systemMessage: "You are a helpful customer support agent..."
+  }}
+  
+  // Appearance
+  theme="chatgpt"
+  appearance="dark"
+  colors={{
+    primary: "#10a37f",
+    secondary: "#1a7f64"
+  }}
+  buttonSize="medium" // "small", "medium", "large"
+  buttonStyle="circle" // "circle", "rounded", "square", "pill"
+  
+  // Behavior
+  defaultOpen={false}
+  openTrigger="click" // "click" or "hover"
+  enableTypingAnimation={true}
+  
+  // Layout
+  chatLayout="normal" // "normal", "popup", "sidebar"
+  position="bottom-right"
+  
+  // Storage
+  storage={{
+    type: "localStorage" // "localStorage", "sessionStorage", "none", "custom"
+  }}
 />
 ```
 
-### Position Behavior Logic
+### Custom Styles
 
-- **Corner Positions**: When in a corner, the chat window opens with a slight offset from the button
-- **Full-height/width**: These layouts stretch the chat window to fill the entire height or width
-- **Fullscreen**: Takes over the entire viewport, ideal for mobile or focus mode
-- **Custom**: Allows complete control over both button and chat window positioning
-
-### Auto-Open Chat
-
-To have the chat window open automatically when the page loads:
+Apply your own CSS-in-JS styles:
 
 ```jsx
 <PGPT 
-  defaultOpen={true}
-  chatLayout="popup" // Works best with popup layout
+  styles={{
+    chatContainer: { borderRadius: '16px' },
+    header: { background: 'linear-gradient(90deg, #4a6cf7, #4a2cf7)' },
+    userBubble: { borderRadius: '18px' },
+    botBubble: { borderRadius: '18px' }
+  }}
 />
 ```
 
-## 💼 Customer Support Integration
+## 👨‍💻 Advanced Features
 
-Create a dedicated customer support chatbot with just a few lines of code:
+### Assistant Roles
+
+Create specialized assistants:
 
 ```jsx
 <PGPT 
-  apiKey="your-openai-api-key"
-  title="Customer Support"
-  subtitle="We're here to help!"
-  theme="blue"
-  systemMessage="You are a helpful customer support agent for our company. Help users with their questions about our products and services. Be friendly, professional, and concise."
-  welcomeMessage="Hello! I'm your customer support assistant. How can I help you today?"
+  role="coder" // Programming assistant
+  // Other roles: "assistant", "writer", "teacher", "researcher", "translator"
+/>
+```
+
+### Rules System
+
+Add guardrails for your assistant's behavior:
+
+```jsx
+<PGPT 
   rules={[
     "Always be polite and professional",
-    "If you don't know the answer, suggest contacting our support team at support@example.com",
+    "If you don't know the answer, suggest contacting our support team",
+    "Never share personal information or financial advice",
     "Offer clear step-by-step instructions when providing solutions"
   ]}
 />
 ```
 
-For different support departments:
+### Loading Animation Options
+
+Choose from different loading indicators:
 
 ```jsx
-// Technical Support
-<PGPT 
-  role="coder"  // Technical mindset
-  title="Tech Support" 
-  systemMessage="You are a technical support specialist. Help users solve technical problems with our software."
-/>
-
-// Billing Support
-<PGPT 
-  title="Billing Support"
-  systemMessage="You are a billing support specialist. Help users with questions about their account, subscriptions, and payments."
-/>
-
-// Product Support
-<PGPT 
-  title="Product Help" 
-  systemMessage="You are a product specialist. Help users understand how to use our product features effectively."
-/>
+<PGPT loadingAnimation="dots" /> // "dots", "spinner", "pulse", "bar", "typingDots"
 ```
 
-## 📋 Layout Options
+## 📱 Responsive Configuration
 
-| Layout | Description |
-|--------|-------------|
-| `normal` | Standard chat window (default) |
-| `popup` | Large, centered popup |
-| `sidebar` | Full-height sidebar |
-
-```jsx
-<PGPT chatLayout="sidebar" />
-```
-
-## 💬 Assistant Roles
-
-Set up specialized assistants with predefined personalities:
-
-```jsx
-<PGPT role="coder" />  // Programming assistant
-<PGPT role="customer_support" /> // Customer Support assistant 
-<PGPT role="teacher" /> // Educational assistant
-```
-
-Available roles: `assistant`, `coder`, `writer`, `teacher`, `researcher`, `translator`, `customer_support`
-
-## 🎭 Custom Styling
-
-Apply your own styles to match your brand:
-
-```jsx
-const customStyles = {
-  chatContainer: { borderRadius: '16px' },
-  header: { background: 'linear-gradient(90deg, #4a6cf7, #4a2cf7)' },
-  userBubble: { borderRadius: '18px' },
-  botBubble: { borderRadius: '18px' }
-};
-
-<PGPT customStyles={customStyles} />
-```
-
-## 📱 Responsive Options
-
-Control size and position:
+Control sizing for different devices:
 
 ```jsx
 <PGPT 
-  position="bottom-right" // or "bottom-left", "top-right", "top-left"
-  buttonSize="medium"     // or "small", "large"
-  fixedHeight="400px"     // for normal layout
+  minHeight="28rem"
+  maxHeight="80vh"
+  fixedHeight="400px" // For normal layout
 />
 ```
 
-## 👨‍👩‍👧‍👦 Browser Support
-
-Compatible with all modern browsers:
-- Chrome, Firefox, Safari, Edge (latest versions)
-
-## 🛠️ Complete Props Reference
+## 📋 Complete Props Reference
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `apiKey` | string | - | OpenAI API key (required if not using `routerConfig`) |
-| `routerConfig` | object | - | Router configuration for custom API endpoint (required if not using `apiKey`) |
-| `llmProvider` | string | "openai" | LLM provider (only used with `apiKey`) |
-| `model` | string | (first available) | OpenAI model name (only used with `apiKey`) |
-| `placeholder` | string | "Type your message here..." | Input placeholder text |
-| `title` | string | "PGPT Assistant" | Title displayed in header |
-| `subtitle` | string | "AI-powered chat assistant" | Subtitle displayed in header |
+| `apiKey` | string | - | OpenAI API key |
+| `routerConfig` | object | - | Custom API endpoint config |
 | `theme` | string | "blue" | UI theme |
-| `position` | string or object | "bottom-right" | Position of chat button and window. Options: 'top-left', 'top-right', 'bottom-left', 'bottom-right', 'center', 'fixed', 'left-full-height', 'right-full-height', 'top-full-width', 'bottom-full-width', 'fullscreen', or a custom object `{x, y, offsetX?, offsetY?}` |
-| `welcomeMessage` | string | "Hello! How can I help you today?" | Initial message from bot |
-| `buttonSize` | string | "medium" | Size of chat button |
-| `initiallyOpen` | boolean | false | Whether chat is initially open |
-| `role` | string | "assistant" | Role template for the bot |
-| `rules` | string[] | [] | Rules to guide AI responses |
-| `customLogo` | React.ReactNode | - | Custom icon for button/header |
-| `chatLayout` | string | "normal" | Layout style |
-| `minHeight` | string | "28rem" | Minimum height of chat window |
-| `maxHeight` | string | "80vh" | Maximum height of chat window |
-| `systemMessage` | string | - | Custom system message for AI |
-| `customStyles` | object | {} | Custom styles for elements |
-| `showLabelWithLogo` | boolean | false | Show title with logo in button |
-| `fixedHeight` | string | "400px" | Fixed height for normal layout |
-| `errorColor` | string | "#ef4444" | Color of error notifications |
-| `warningColor` | string | "#f59e0b" | Color of warning notifications |
-| `isCloseable` | boolean | true | Whether chat can be closed |
-| `enableTypingAnimation` | boolean | false | Enable typing animation |
-| `defaultOpen` | boolean | false | Open chat window automatically on load |
+| `appearance` | string | "light" | "light" or "dark" mode |
+| `model` | string | "gpt-4o" | LLM model to use |
+| `position` | string/object | "bottom-right" | Button position |
+| `content` | object | {} | Text content configuration |
+| `colors` | object | {} | Custom color overrides |
+| `classes` | object | {} | Custom CSS classes |
+| `styles` | object | {} | Custom inline styles |
+| `useTextarea` | boolean | false | Use textarea vs input |
+| `enableTypingAnimation` | boolean | true | Show typing animation |
+| `defaultOpen` | boolean | false | Open on load |
+| `openTrigger` | string | "click" | "click" or "hover" |
+| `isCloseable` | boolean | true | Show close button |
+| `storage` | object | { type: "local" } | History storage config |
+| `logo` | ReactNode | - | Custom logo element |
+| `buttonSize` | string | "medium" | Button size |
+| `buttonStyle` | string | "circle" | Button shape |
+| `llmProvider` | string | "OpenAI" | LLM provider name |
+| `role` | string | "assistant" | Assistant personality |
+| `rules` | string[] | [] | Behavior guidelines |
+| `minHeight` | string | "28rem" | Min chat height |
+| `maxHeight` | string | "80vh" | Max chat height |
+| `fixedHeight` | string | "" | Fixed chat height |
+| `chatLayout` | string | "normal" | Window layout |
+| `showLabelWithLogo` | boolean | false | Show text with icon |
+| `bubbleStyle` | string | "modern" | Message bubble style |
+| `loadingAnimation` | string | "typingDots" | Loading indicator |
+| `bubbleAnimation` | boolean | true | Animate bubbles |
+| `onSendMessage` | function | - | Message sent callback |
+| `onReceiveMessage` | function | - | Message received callback |
+| `onOpen` | function | - | Open event callback |
+| `onClose` | function | - | Close event callback |
 
 ## 🔗 Links
 
 - [GitHub Repository](https://github.com/code-abdulrehman/p-gpt)
-- [Issue Tracker](https://github.com/code-abdulrehman/p-gpt/issues)
 - [NPM Package](https://www.npmjs.com/package/p-gpt)
-
-## 👨‍💻 Author
-
-P-GPT is created and maintained by Abdul Rehman.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+- [Issue Tracker](https://github.com/code-abdulrehman/p-gpt/issues)
 
 ## 📄 License
 
-MIT
+MIT © [P-GPT Team](https://github.com/code-abdulrehman)
