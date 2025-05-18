@@ -36,13 +36,14 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "build:rollup": "rollup -c && cp src/index.css dist/index.css",
+    "build": "rollup -c && cp src/index.css dist/index.css",
+    "build:vite": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx,js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@babel/runtime": "^7.24.0",
     "@tailwindcss/vite": "^4.0.17",
     "axios": "^1.8.4",
     "prism-react-renderer": "^2.4.1",
@@ -56,6 +57,7 @@
     "@babel/preset-env": "^7.24.0",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
+    "@babel/plugin-transform-runtime": "^7.24.0",
     "@eslint/js": "^9.21.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^28.0.3",

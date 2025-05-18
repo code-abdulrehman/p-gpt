@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
-  FaRobot, FaCode, FaGithub, FaNpm, FaCreditCard, FaDownload, FaGraduationCap, FaHeadset,
-  FaWrench, FaCopy, FaCheck, FaInfoCircle, FaSun, FaMoon, FaTable, FaExclamationTriangle
+  FaRobot, FaCode, FaGithub, FaNpm, FaDownload, FaGraduationCap, FaHeadset,
+  FaWrench, FaCopy, FaCheck, FaInfoCircle, FaSun, FaMoon, FaTable
 } from "react-icons/fa";
 import { Highlight, themes } from 'prism-react-renderer';
 import PGPT from './PGPT';
@@ -574,9 +574,10 @@ const CodeBlock = ({ code, language, isDark = true }: { code: string, language: 
 // Main LandingPage component
 const LandingPage = () => {
   // Initialize dark mode from localStorage or default to false
-  const [darkMode, setDarkMode] = useState(() => {
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
     const savedTheme = localStorage.getItem('pgpt-landing-theme');
-    return savedTheme ? savedTheme === 'dark' : 'dark';
+    // Ensure we're returning a boolean, not a string
+    return savedTheme === 'dark';
   });
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -593,10 +594,6 @@ const LandingPage = () => {
   const [demoPosition, setDemoPosition] = useState<PositionType>('bottom-right');
   const [demoChatOpen, setDemoChatOpen] = useState(false);
   
-  // New state for the persistent demo chat (visible when scrolling)
-  const [persistentChatOpen, setPersistentChatOpen] = useState(false);
-  const [showPersistentChat, setShowPersistentChat] = useState(false);
-
   // Define available demo themes - Update to include only supported themes from PGPT component
   const availableThemes: ThemeType[] = ['blue', 'green', 'red', 'purple', 'teal', 'chatgpt'];
 
@@ -611,10 +608,6 @@ const LandingPage = () => {
   const primaryLightBg = primaryColor === 'indigo' ? 'bg-indigo-100' : 'bg-teal-100';
   const primaryHoverLightBg = primaryColor === 'indigo' ? 'hover:bg-indigo-200' : 'hover:bg-teal-200';
   const primaryLightText = primaryColor === 'indigo' ? 'text-indigo-800' : 'text-teal-800';
-  const primaryBorder = primaryColor === 'indigo' ? 'border-indigo-500' : 'border-teal-500';
-  const primaryGradient = primaryColor === 'indigo'
-    ? 'bg-gradient-to-b from-indigo-500 to-indigo-700'
-    : 'bg-gradient-to-b from-teal-500 to-teal-700';
 
   // Feature tags for hero section with improved styling
   const featureTags = [
@@ -679,23 +672,14 @@ const LandingPage = () => {
     setDemoChatOpen(false);
   };
   
-  // Persistent demo chat handlers
-  const handlePersistentChatOpen = () => {
-    setPersistentChatOpen(true);
-  };
-  
-  const handlePersistentChatClose = () => {
-    setPersistentChatOpen(false);
-  };
-  
   // Add effect to show persistent chat when scrolling to demo section
   useEffect(() => {
     const handleScroll = () => {
       const demoSection = document.getElementById('demo');
       if (demoSection) {
+        // This is just for monitoring the position, not doing anything with it
         const rect = demoSection.getBoundingClientRect();
-        // Show persistent chat when demo section is being scrolled away
-        setShowPersistentChat(rect.top < 0 || rect.bottom > window.innerHeight);
+        // We're not using setShowPersistentChat anymore
       }
     };
     

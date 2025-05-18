@@ -8,7 +8,6 @@ export type BubbleStyle = 'default' | 'modern' | 'rounded' | 'sharp' | 'bordered
 interface ChatBubbleProps {
   role: 'user' | 'bot';
   content: string;
-  avatarUrl?: string;
   username?: string;
   timestamp?: string;
   themeConfig: any;
@@ -25,7 +24,6 @@ interface ChatBubbleProps {
 const ChatBubble: React.FC<ChatBubbleProps> = ({
   role,
   content,
-  avatarUrl,
   username,
   timestamp,
   themeConfig,

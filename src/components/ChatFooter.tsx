@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { FaPaperPlane } from "react-icons/fa";
 
 interface ChatFooterProps {
@@ -35,7 +35,6 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
   autofocus = true,
 }) => {
   const inputRef = useRef<HTMLTextAreaElement | HTMLInputElement>(null);
-  const [isFocused, setIsFocused] = useState(false);
 
   // Get input classes
   const getInputClasses = () => {
@@ -85,8 +84,6 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
                   handleSendMessage();
                 }
               }}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
               placeholder={loading ? "AI is responding..." : placeholder}
               className={getInputClasses()}
               style={{ 
@@ -111,8 +108,6 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
                   handleSendMessage();
                 }
               }}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
               placeholder={loading ? "AI is responding..." : placeholder}
               className={getInputClasses()}
               style={{ 

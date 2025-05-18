@@ -20,8 +20,9 @@ export {
   OPEN_TRIGGERS 
 } from './utils/common';
 
-// Re-exporting types directly since they're not exported from PGPT
-import type { ChatMessage, RouterConfig } from './utils/api';
+// Import and re-export types from './utils/api'
+import type { ChatMessage, RouterConfig, SendMessageOptions } from './utils/api';
+export type { ChatMessage, RouterConfig, SendMessageOptions };
 
 // Define the types that should be exported
 export type PGPTPosition = 
@@ -74,7 +75,7 @@ export interface PGPTProps {
   maxHeight?: string;
   chatLayout?: PGPTLayout;
   systemMessage?: string;
-  customStyles?: PGPTCustomStyles;
+  customStyles?: any;  // Fixed type reference issue
   showLabelWithLogo?: boolean;
   fixedHeight?: string;
   errorColor?: string;
@@ -90,5 +91,3 @@ export {
   LLM_PROVIDERS,
   PROVIDER_MODELS
 } from './utils/api';
-
-export type { ChatMessage, SendMessageOptions, RouterConfig } from './utils/api';

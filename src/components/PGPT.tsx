@@ -1,11 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import { 
-  FaTimes, FaPaperPlane, FaUser, FaExclamationTriangle 
-} from "react-icons/fa";
+import { FaExclamationTriangle } from "react-icons/fa";
 import { SiRobotframework } from "react-icons/si";
 import { 
   PGPTThemeConfig, THEME_CONFIGS, DEFAULT_HEADER_TEXT, 
-  DEFAULT_FOOTER_TEXT, DEFAULT_SYSTEM_MESSAGES, DEFAULT_BUTTON_POSITION,
+  DEFAULT_SYSTEM_MESSAGES, DEFAULT_BUTTON_POSITION,
   PGPTCustomStyles, STORAGE_TYPES, APPEARANCE_MODES, OPEN_TRIGGERS
 } from "../utils/common";
 import { ChatMessage, sendMessage, getModelsForProvider } from "../utils/api";
@@ -253,7 +251,7 @@ const PGPT: React.FC<PGPTProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [warning, setWarning] = useState<string | null>(null);
   const [lastBotMessageIndex, setLastBotMessageIndex] = useState<number>(-1);
-  const [hoverTimeout, setHoverTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [hoverTimeout, setHoverTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
   
   // Determine if typing animation should be used
   const shouldUseTypingAnimation = enableTypingAnimation;
@@ -300,7 +298,7 @@ const PGPT: React.FC<PGPTProps> = ({
     'fixed': 'top-4 right-1/2 transform translate-x-1/2',
   };
 
-  // Generate storage key based on theme and provider
+  // Get storage key based on theme and provider
   const getStorageKey = () => {
     return storage.key || `pgpt-messages-${currentTheme}-${currentProvider}`;
   };
@@ -313,9 +311,7 @@ const PGPT: React.FC<PGPTProps> = ({
         // Handle both synchronous and Promise return types
         if (result instanceof Promise) {
           // For async storage, we'll return null and handle the Promise elsewhere
-          result.then(value => {
-            // This would need to be handled by the component
-          }).catch(err => {
+          result.then().catch(err => {
             console.error("Error retrieving from custom storage:", err);
           });
           return null;
@@ -525,16 +521,6 @@ const PGPT: React.FC<PGPTProps> = ({
         };
     }
   };
-
-  // Button size classes
-  const buttonSizeClasses = {
-    'small': 'h-10 w-10',
-    'medium': 'h-12 w-12',
-    'large': 'h-14 w-14',
-  };
-
-  // Should button be hidden based on position
-  const shouldHideButton = positionType === 'fullscreen' && isOpen;
 
   // Load saved messages from storage on initial load
   useEffect(() => {
