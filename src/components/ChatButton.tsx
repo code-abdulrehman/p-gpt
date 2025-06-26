@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import { FaTimes } from "react-icons/fa";
-import { SiRobotframework } from "react-icons/si";
+import { FiMessageSquare } from "react-icons/fi";
 
 interface ChatButtonProps {
   isOpen: boolean;
@@ -101,7 +101,7 @@ const ChatButton = forwardRef<HTMLButtonElement, ChatButtonProps>(({
         <FaTimes className="text-white h-1/2 w-1/2" />
       ) : (
         <div className="flex items-center justify-center space-x-1">
-          {logo || <SiRobotframework className="text-white h-6 w-6" />}
+          {logo || <FiMessageSquare className="text-white h-6 w-6" />}
           {showLabel && (
             <span className="text-white font-medium whitespace-nowrap">
               {label}

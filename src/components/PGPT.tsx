@@ -496,7 +496,7 @@ const PGPT: React.FC<PGPTProps> = ({
       case 'bottom-left':
         return {
           position: 'fixed',
-          bottom: '60px',
+          bottom: '74px',
           left: '20px',
           width: '350px',
           height: styles?.chatContainer?.minHeight || fixedHeight,
@@ -505,7 +505,7 @@ const PGPT: React.FC<PGPTProps> = ({
       case 'bottom-right':
         return {
           position: 'fixed',
-          bottom: '60px',
+          bottom: '74px',
           right: '20px',
           width: '350px',
           height: styles?.chatContainer?.minHeight || fixedHeight,
@@ -514,7 +514,7 @@ const PGPT: React.FC<PGPTProps> = ({
       default:
         return {
           position: 'fixed',
-          bottom: '60px',
+          bottom: '74px',
           right: '20px',
           width: '350px',
           height: styles?.chatContainer?.minHeight || fixedHeight,
