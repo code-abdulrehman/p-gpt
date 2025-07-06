@@ -70,7 +70,7 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
       style={style}
     >
       <div 
-        className={`flex ${useTextarea ? 'rounded-lg p-2 pb-1 flex-col' : 'rounded-2xl flex-row w-full'} border border-gray-300 dark:border-gray-600 overflow-hidden`}
+        className={`flex ${useTextarea ? 'rounded-lg p-2 pb-1 flex-col' : 'rounded-2xl flex-row w-full'} border ${themeConfig.border} ${className} overflow-hidden`}
       >
         <div className={`flex ${useTextarea ? 'items-end' : 'items-center gap-2 w-full p-1'} justify-between relative`}>
           {useTextarea ? (
@@ -133,7 +133,7 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
                     <rect x="6" y="6" width="12" height="12"></rect>
                   </svg>
                 ) : (
-                  <FaPaperPlane className="h-3.5 w-3.5" />
+                  <FaPaperPlane className={`h-4 w-4 ${themeConfig.icon}`} />
                 )
               )}
             </button>

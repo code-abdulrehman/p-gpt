@@ -3,48 +3,23 @@ import {
   FaRobot, FaCode, FaGithub, FaNpm, FaDownload, FaGraduationCap, FaHeadset,
   FaWrench, FaCopy, FaCheck, FaInfoCircle, FaSun, FaMoon, FaTable
 } from "react-icons/fa";
+import { TbBoxAlignBottomRightFilled, TbBoxAlignBottomLeftFilled } from "react-icons/tb";
+import { SlSizeFullscreen } from "react-icons/sl";
+import { VscColorMode } from "react-icons/vsc";
 import { Highlight, themes } from 'prism-react-renderer';
 import PGPT from './PGPT';
 
 // Define position types to match PGPT component
 type PositionType = 
-  | 'top-left'
-  | 'top-right'
   | 'bottom-left'
   | 'bottom-right'
-  | 'center'
-  | 'fixed'
-  | 'left-full-height'
-  | 'right-full-height'
-  | 'top-full-width'
-  | 'bottom-full-width'
-  | 'fullscreen'
-  | 'custom';
+  | 'fullscreen';
 
 // Define theme types to match available themes in PGPT
 type ThemeType = 
-  | 'blue'
-  | 'green'
-  | 'red'
-  | 'purple'
-  | 'teal'
-  | 'indigo'
-  | 'amber'
-  | 'chatgpt'
-  | 'gemini'
-  | 'grok'
-  | 'copilot'
-  | 'claude'
-  | 'gold'
   | 'silver'
-  | 'titanium'
   | 'premium'
-  | 'light'
-  | 'dark'
-  | 'slate'
-  | 'midnight'
-  | 'sunset'
-  | 'pink';
+  | 'titanium';
 
 // Toast notification component
 interface ToastProps {
@@ -95,7 +70,7 @@ function App() {
   return (
     <PGPT 
       apiKey="YOUR_API_KEY" 
-      theme="chatgpt"
+      theme="silver"
       appearance="dark"
       content={{
         title: "Customer Support",
@@ -103,6 +78,26 @@ function App() {
       }}
       enableTypingAnimation={true}
       defaultOpen={false}
+    />
+  );
+}`;
+
+const geminiUsageCode = `import { PGPT } from 'p-gpt';
+import 'p-gpt/dist/index.css';
+
+function App() {
+  return (
+    <PGPT 
+      apiKey="YOUR_GEMINI_API_KEY" 
+      llmProvider="Gemini"
+      model="gemini-1.5-pro"
+      theme="premium"
+      appearance="light"
+      content={{
+        title: "AI Assistant",
+        welcomeMessage: "Hello! I'm powered by Gemini. How can I assist you?"
+      }}
+      enableTypingAnimation={true}
     />
   );
 }`;
@@ -119,7 +114,25 @@ function App() {
           "x-api-key": "internal-api-key"
         }
       }}
-      theme="blue"
+      theme="titanium"
+    />
+  );
+}`;
+
+const contextUsageCode = `import { PGPT } from 'p-gpt';
+import 'p-gpt/dist/index.css';
+
+function App() {
+  return (
+    <PGPT 
+      apiKey="YOUR_API_KEY"
+      theme="premium"
+      includeHistory={true}
+      contextLength={5}
+      content={{
+        title: "Context-Aware Assistant",
+        welcomeMessage: "Hi! I can remember our recent conversation for better context."
+      }}
     />
   );
 }`;
@@ -151,11 +164,10 @@ const propsData = [
       {
         name: "theme",
         type: "string",
-        default: "'blue'",
-        description: "Theme name (e.g., 'chatgpt', 'blue', 'dark')",
+        default: "'silver'",
+        description: "Theme name",
         options: [
-          "blue", "green", "red", "purple", "teal", "chatgpt",
-          "minimal", "sunset", "gradient-blue", "gradient-purple"
+          "silver", "premium", "titanium"
         ]
       },
       {
@@ -169,8 +181,8 @@ const propsData = [
         name: "model",
         type: "string",
         default: "'gpt-4o'",
-        description: "OpenAI model to use (e.g., 'gpt-4o', 'gpt-3.5-turbo')",
-        options: ["gpt-4o", "gpt-4", "gpt-3.5-turbo", "gpt-4-turbo"]
+        description: "AI model to use (OpenAI: gpt-4o, gpt-4, gpt-3.5-turbo; Gemini: gemini-1.5-pro, gemini-1.5-flash, gemini-pro)",
+        options: ["gpt-4o", "gpt-4", "gpt-3.5-turbo", "gpt-4-turbo", "gemini-1.5-pro", "gemini-1.5-flash", "gemini-pro", "gemini-pro-vision"]
       },
       {
         name: "position",
@@ -178,9 +190,7 @@ const propsData = [
         default: "'bottom-right'",
         description: "Chat position or custom position object",
         options: [
-          "top-left", "top-right", "bottom-left", "bottom-right", "center",
-          "fixed", "left-full-height", "right-full-height", "top-full-width",
-          "bottom-full-width", "fullscreen", "custom"
+          "bottom-left", "bottom-right", "fullscreen", "custom"
         ]
       }
     ]
@@ -364,8 +374,8 @@ const propsData = [
         name: "llmProvider",
         type: "string",
         default: "'OpenAI'",
-        description: "LLM provider to use",
-        options: ["OpenAI"]
+        description: "LLM provider to use (OpenAI or Gemini)",
+        options: ["OpenAI", "Gemini"]
       },
       {
         name: "role",
@@ -379,6 +389,20 @@ const propsData = [
         type: "string[]",
         default: "[]",
         description: "Custom rules to add to system message",
+        options: []
+      },
+      {
+        name: "includeHistory",
+        type: "boolean",
+        default: "false",
+        description: "Include recent chat history in API calls for context (may increase token usage)",
+        options: ["true", "false"]
+      },
+      {
+        name: "contextLength",
+        type: "number",
+        default: "10",
+        description: "Number of recent messages to include when includeHistory is true",
         options: []
       }
     ]
@@ -590,15 +614,15 @@ const LandingPage = () => {
   });
 
   // Demo themes and positions with proper typing
-  const [demoTheme, setDemoTheme] = useState<ThemeType>('chatgpt');
+  const [demoTheme, setDemoTheme] = useState<ThemeType>('silver');
   const [demoPosition, setDemoPosition] = useState<PositionType>('bottom-right');
   const [demoChatOpen, setDemoChatOpen] = useState(false);
   
-  // Define available demo themes - Update to include only supported themes from PGPT component
-  const availableThemes: ThemeType[] = ['blue', 'green', 'red', 'purple', 'teal', 'chatgpt'];
+  // Define available demo themes - Only 3 supported themes
+  const availableThemes: ThemeType[] = ['silver', 'premium', 'titanium'];
 
-  // Define available positions
-  const availablePositions: PositionType[] = ['bottom-right', 'bottom-left', 'top-right', 'top-left', 'center'];
+  // Define available positions - Only 3 supported positions
+  const availablePositions: PositionType[] = ['bottom-left', 'bottom-right', 'fullscreen'];
 
   // Define color variables based on selected primary color
   const primaryBg = primaryColor === 'indigo' ? 'bg-indigo-600' : 'bg-teal-600';
@@ -691,8 +715,7 @@ const LandingPage = () => {
   const tabs = [
     { id: "installation", label: "Installation", icon: <FaDownload /> },
     { id: "basic", label: "Basic Usage", icon: <FaCode /> },
-    { id: "advanced", label: "Advanced", icon: <FaWrench /> },
-    { id: "api", label: "Custom API", icon: <FaHeadset /> },
+    { id: "llm-api", label: "LLM API", icon: <FaRobot /> },
     { id: "themes", label: "Themes", icon: <FaGraduationCap /> },
     { id: "props", label: "Props Reference", icon: <FaTable /> },
   ];
@@ -700,13 +723,10 @@ const LandingPage = () => {
   // Add this helper function near the other functions
   const getThemeColorClass = (theme: ThemeType): string => {
     switch (theme) {
-      case 'blue': return 'text-blue-500';
-      case 'green': return 'text-green-500';
-      case 'red': return 'text-red-500';
-      case 'purple': return 'text-purple-500';
-      case 'teal': return 'text-teal-500';
-      case 'chatgpt': return 'text-gray-500';
-      default: return 'text-gray-500';
+      case 'silver': return 'text-gray-400';
+      case 'premium': return 'text-purple-500';
+      case 'titanium': return 'text-zinc-500';
+      default: return 'text-gray-400';
     }
   };
 
@@ -720,13 +740,13 @@ const LandingPage = () => {
             <h1 className="text-xl font-bold">P-GPT</h1>
           </div>
           <div className="flex items-center space-x-4">
-            <button
+            {/* <button
               onClick={togglePrimaryColor}
               className="flex items-center hover:text-blue-200 transition-colors duration-200"
               aria-label="Toggle primary color"
             >
               {primaryColor === 'indigo' ? 'Switch to Teal' : 'Switch to Indigo'}
-            </button>
+            </button> */}
             <a
               href="https://github.com/code-abdulrehman/p-gpt"
               target="_blank"
@@ -749,6 +769,13 @@ const LandingPage = () => {
                 NPM
               </span>
             </a>
+            <button
+              onClick={togglePrimaryColor}
+              className="p-2 rounded-full hover:bg-gray-700 transition-colors duration-200"
+              aria-label="Toggle dark mode"
+            >
+              <VscColorMode />
+            </button>
             <button
               onClick={toggleDarkMode}
               className="p-2 rounded-full hover:bg-gray-700 transition-colors duration-200"
@@ -965,71 +992,108 @@ const LandingPage = () => {
               </div>
             </div>
 
-            {/* Advanced Usage */}
-            <div id="advanced" className={activeTab === 'advanced' ? 'block' : 'hidden'}>
-              <h2 className={`text-3xl font-bold mb-6 ${darkMode ? primaryTextLight : primaryText}`}>Advanced Customization</h2>
+            {/* LLM API Usage */}
+            <div id="llm-api" className={activeTab === 'llm-api' ? 'block' : 'hidden'}>
+              <h2 className={`text-3xl font-bold mb-6 ${darkMode ? primaryTextLight : primaryText}`}>LLM API Integration</h2>
+              
+              {/* OpenAI API Section */}
               <div className={`p-6 rounded-lg mb-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className={`text-xl font-semibold ${darkMode ? 'text-white' : primaryText}`}>Custom Appearance</h3>
-                </div>
+                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : primaryText}`}>OpenAI API</h3>
+                <p className="mb-4">Use OpenAI's powerful models including GPT-4, GPT-3.5-turbo, and more.</p>
                 <CodeBlock code={advancedUsageCode} language="jsx" isDark={darkMode} />
-              </div>
-
-              <div className={`p-6 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? primaryTextLight : primaryText}`}>Pre-built Bot Examples</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white shadow'}`}>
-                    <h4 className={`font-medium mb-2 ${darkMode ? 'text-white' : primaryText}`}>Customer Support Bot</h4>
-                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                      A bot configured to handle customer service inquiries with a friendly tone.
-                    </p>
-                  </div>
-                  <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white shadow'}`}>
-                    <h4 className={`font-medium mb-2 ${darkMode ? 'text-white' : primaryText}`}>Technical Documentation Bot</h4>
-                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                      A bot that helps users navigate your technical documentation.
-                    </p>
-                  </div>
-                  <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white shadow'}`}>
-                    <h4 className={`font-medium mb-2 ${darkMode ? 'text-white' : primaryText}`}>Product Recommendation Bot</h4>
-                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                      A bot that suggests products based on user preferences.
-                    </p>
-                  </div>
-                  <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white shadow'}`}>
-                    <h4 className={`font-medium mb-2 ${darkMode ? 'text-white' : primaryText}`}>FAQ Bot</h4>
-                    <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                      A bot pre-loaded with frequently asked questions and answers.
-                    </p>
+                
+                <div className="mt-4">
+                  <h4 className={`font-semibold mb-2 ${darkMode ? 'text-white' : primaryText}`}>Available OpenAI Models</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white shadow-sm'}`}>
+                      <code className={`font-mono text-sm ${darkMode ? 'text-green-300' : 'text-green-600'}`}>gpt-4o</code>
+                      <p className={`text-sm mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Latest and most capable model</p>
+                    </div>
+                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white shadow-sm'}`}>
+                      <code className={`font-mono text-sm ${darkMode ? 'text-green-300' : 'text-green-600'}`}>gpt-4-turbo</code>
+                      <p className={`text-sm mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Optimized for speed and efficiency</p>
+                    </div>
+                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white shadow-sm'}`}>
+                      <code className={`font-mono text-sm ${darkMode ? 'text-green-300' : 'text-green-600'}`}>gpt-3.5-turbo</code>
+                      <p className={`text-sm mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Fast and cost-effective</p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* API Route Usage */}
-            <div id="api" className={activeTab === 'api' ? 'block' : 'hidden'}>
-              <h2 className={`text-3xl font-bold mb-6 ${darkMode ? primaryTextLight : primaryText}`}>Custom API Endpoint</h2>
+              {/* Gemini API Section */}
               <div className={`p-6 rounded-lg mb-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className={`text-xl font-semibold ${darkMode ? 'text-white' : primaryText}`}>Using with a Backend Route</h3>
+                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : primaryText}`}>Google Gemini API</h3>
+                <p className="mb-4">Integrate Google's advanced Gemini models for multimodal AI capabilities.</p>
+                <CodeBlock code={geminiUsageCode} language="jsx" isDark={darkMode} />
+                
+                <div className="mt-4">
+                  <h4 className={`font-semibold mb-2 ${darkMode ? 'text-white' : primaryText}`}>Available Gemini Models</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white shadow-sm'}`}>
+                      <code className={`font-mono text-sm ${darkMode ? 'text-blue-300' : 'text-blue-600'}`}>gemini-1.5-pro</code>
+                      <p className={`text-sm mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Most capable with enhanced reasoning</p>
+                    </div>
+                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white shadow-sm'}`}>
+                      <code className={`font-mono text-sm ${darkMode ? 'text-blue-300' : 'text-blue-600'}`}>gemini-1.5-flash</code>
+                      <p className={`text-sm mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Optimized for speed</p>
+                    </div>
+                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white shadow-sm'}`}>
+                      <code className={`font-mono text-sm ${darkMode ? 'text-blue-300' : 'text-blue-600'}`}>gemini-pro-vision</code>
+                      <p className={`text-sm mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>Multimodal text and image understanding</p>
+                    </div>
+                  </div>
                 </div>
-                <CodeBlock code={routerUsageCode} language="jsx" isDark={darkMode} />
+                
+                <div className={`mt-6 p-4 rounded-lg ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-blue-50 text-blue-800'}`}>
+                  <h4 className="flex items-center font-semibold mb-2">
+                    <FaInfoCircle className="mr-2" /> Getting Your Gemini API Key
+                  </h4>
+                  <ol className="list-decimal pl-6 space-y-1">
+                    <li>Visit <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="underline">Google AI Studio</a></li>
+                    <li>Sign in with your Google account</li>
+                    <li>Click "Create API Key" and follow the instructions</li>
+                    <li>Copy your API key and use it in the <code className={`px-1 py-0.5 rounded ${darkMode ? 'bg-gray-600 text-blue-300' : 'bg-blue-100 text-blue-900'}`}>apiKey</code> prop</li>
+                  </ol>
+                </div>
               </div>
 
-              <div className={`p-6 rounded-lg ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-green-50 text-green-800'}`}>
-                <h3 className="flex items-center text-xl font-semibold mb-2">
-                  <FaInfoCircle className="mr-2" /> Backend Implementation
-                </h3>
-                <p className="mb-4">
-                  Your backend route should accept the same parameters as the OpenAI API and return responses in the same format.
-                  This allows you to:
-                </p>
-                <ul className="list-disc pl-6 space-y-2">
-                  <li>Keep your API key secure on the server</li>
-                  <li>Add rate limiting and user authentication</li>
-                  <li>Log and monitor usage</li>
-                  <li>Implement custom logic before passing to OpenAI</li>
-                </ul>
+              {/* Custom API Section */}
+              <div className={`p-6 rounded-lg mb-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : primaryText}`}>Custom API Endpoint</h3>
+                <p className="mb-4">Use your own backend API for enhanced security and custom logic.</p>
+                <CodeBlock code={routerUsageCode} language="jsx" isDark={darkMode} />
+                
+                <div className={`mt-6 p-4 rounded-lg ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-green-50 text-green-800'}`}>
+                  <h4 className="flex items-center font-semibold mb-2">
+                    <FaInfoCircle className="mr-2" /> Backend Implementation Benefits
+                  </h4>
+                  <ul className="list-disc pl-6 space-y-1">
+                    <li>Keep your API key secure on the server</li>
+                    <li>Add rate limiting and user authentication</li>
+                    <li>Log and monitor usage</li>
+                    <li>Implement custom logic before passing to LLM providers</li>
+                  </ul>
+                </div>
+              </div>
+
+              {/* Context-Aware Conversations Section */}
+              <div className={`p-6 rounded-lg mb-6 ${darkMode ? 'bg-gray-800' : 'bg-gray-50'}`}>
+                <h3 className={`text-xl font-semibold mb-4 ${darkMode ? 'text-white' : primaryText}`}>Context-Aware Conversations</h3>
+                <p className="mb-4">By default, P-GPT only sends the latest user message to avoid rate limiting. Enable context for more coherent conversations.</p>
+                <CodeBlock code={contextUsageCode} language="jsx" isDark={darkMode} />
+                
+                <div className={`mt-6 p-4 rounded-lg ${darkMode ? 'bg-gray-700 text-gray-300' : 'bg-blue-50 text-blue-800'}`}>
+                  <h4 className="flex items-center font-semibold mb-2">
+                    <FaInfoCircle className="mr-2" /> Context Management
+                  </h4>
+                  <ul className="list-disc pl-6 space-y-1">
+                    <li><strong>Default behavior:</strong> Only sends system message + latest user prompt (reduces tokens & rate limiting)</li>
+                    <li><strong>With context:</strong> Includes recent chat history for better conversation flow</li>
+                    <li><strong>contextLength:</strong> Controls how many recent messages to include (default: 10)</li>
+                    <li><strong>Trade-off:</strong> Better context vs. higher token usage and potential rate limits</li>
+                  </ul>
+                </div>
               </div>
             </div>
 
@@ -1038,52 +1102,36 @@ const LandingPage = () => {
               <h2 className={`text-3xl font-bold mb-6 ${darkMode ? primaryTextLight : primaryText}`}>Theme Options</h2>
               <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 mb-6`}>
                 <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white shadow'}`}>
-                  <h3 className={`text-xl font-semibold mb-3 ${darkMode ? primaryTextLight : primaryText}`}>Basic Themes</h3>
+                  <h3 className={`text-xl font-semibold mb-3 ${darkMode ? primaryTextLight : primaryText}`}>Available Themes</h3>
                   <ul className="space-y-2">
                     <li className="flex items-center">
-                      <span className="w-6 h-6 rounded-full bg-blue-500 mr-2"></span>
-                      <span>blue (default)</span>
+                      <span className="w-6 h-6 rounded-full bg-gray-400 mr-2"></span>
+                      <span>silver</span>
                     </li>
                     <li className="flex items-center">
-                      <span className="w-6 h-6 rounded-full bg-green-500 mr-2"></span>
-                      <span>green</span>
+                      <span className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 mr-2"></span>
+                      <span>premium</span>
                     </li>
                     <li className="flex items-center">
-                      <span className="w-6 h-6 rounded-full bg-red-500 mr-2"></span>
-                      <span>red</span>
-                    </li>
-                    <li className="flex items-center">
-                      <span className="w-6 h-6 rounded-full bg-purple-500 mr-2"></span>
-                      <span>purple</span>
-                    </li>
-                    <li className="flex items-center">
-                      <span className="w-6 h-6 rounded-full bg-teal-500 mr-2"></span>
-                      <span>teal</span>
+                      <span className="w-6 h-6 rounded-full bg-zinc-500 mr-2"></span>
+                      <span>titanium</span>
                     </li>
                   </ul>
                 </div>
                 <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white shadow'}`}>
-                  <h3 className={`text-xl font-semibold mb-3 ${darkMode ? primaryTextLight : primaryText}`}>Premium Themes</h3>
+                  <h3 className={`text-xl font-semibold mb-3 ${darkMode ? primaryTextLight : primaryText}`}>Available Positions</h3>
                   <ul className="space-y-2">
                     <li className="flex items-center">
-                      <span className="w-6 h-6 rounded-full bg-gradient-to-r from-green-400 to-blue-500 mr-2"></span>
-                      <span>gradient-blue</span>
+                      <TbBoxAlignBottomLeftFilled className="mr-2 h-5 w-5"/>
+                      <span>bottom-left</span>
                     </li>
                     <li className="flex items-center">
-                      <span className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-400 to-pink-500 mr-2"></span>
-                      <span>gradient-purple</span>
+                      <TbBoxAlignBottomRightFilled className="mr-2 h-5 w-5"/>
+                      <span>bottom-right</span>
                     </li>
                     <li className="flex items-center">
-                      <span className="w-6 h-6 rounded-full bg-gray-800 mr-2"></span>
-                      <span>chatgpt</span>
-                    </li>
-                    <li className="flex items-center">
-                      <span className="w-6 h-6 rounded-full bg-gray-100 mr-2 border border-gray-300"></span>
-                      <span>minimal</span>
-                    </li>
-                    <li className="flex items-center">
-                      <span className="w-6 h-6 rounded-full bg-yellow-400 mr-2"></span>
-                      <span>sunset</span>
+                      <SlSizeFullscreen className="mr-3 h-4 w-4"/>
+                      <span>fullscreen</span>
                     </li>
                   </ul>
                 </div>
@@ -1170,12 +1218,10 @@ const LandingPage = () => {
                       key={theme}
                       onClick={() => handleThemeChange(theme)}
                       className={`px-3 py-1 rounded-lg text-white capitalize transition-all ${theme === demoTheme ? 'ring-2 ring-white ring-opacity-70 font-medium shadow-lg' : 'opacity-80 hover:opacity-100'
-                        } ${theme === 'blue' ? 'bg-blue-500' :
-                          theme === 'green' ? 'bg-green-500' :
-                            theme === 'red' ? 'bg-red-500' :
-                              theme === 'purple' ? 'bg-purple-500' :
-                                theme === 'teal' ? 'bg-teal-500' :
-                                  'bg-gray-800'
+                        } ${theme === 'silver' ? 'bg-gray-400' :
+                          theme === 'premium' ? 'bg-gradient-to-r from-purple-500 to-blue-500' :
+                            theme === 'titanium' ? 'bg-zinc-500' :
+                              'bg-gray-400'
                         }`}
                     >
                       {theme}
@@ -1214,7 +1260,9 @@ const LandingPage = () => {
               <div className="absolute inset-0">
                 <PGPT
                   key={demoChatKey}
-                  apiKey="YOUR_API_KEY"
+                  apiKey="AIzaSyDLFV_DrBTBJgVg6rdptQ96VLHQY9QaWzE"
+                  llmProvider="Gemini"
+                  model="gemini-1.5-flash"
                   theme={demoTheme}
                   bubbleStyle="modern"
                   appearance={darkMode ? "dark" : "light"}
@@ -1226,9 +1274,7 @@ const LandingPage = () => {
                   }}
                   enableTypingAnimation={true}
                   defaultOpen={false}
-                  minHeight="400px"
-                  maxHeight="400px"
-                  position={demoPosition === 'center' ? 'center' : demoPosition}
+                  position={demoPosition}
                   chatLayout="popup"
                   buttonSize="medium"
                   onOpen={handleDemoChatOpen}

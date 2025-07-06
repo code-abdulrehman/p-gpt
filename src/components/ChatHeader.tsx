@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaTimes } from "react-icons/fa";
-import { SiRobotframework } from "react-icons/si";
+import { FiMessageSquare } from "react-icons/fi";
 
 interface ChatHeaderProps {
   title: string;
@@ -31,9 +31,9 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div 
-            className="h-8 w-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center"
+            className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center"
           >
-            {logo || <SiRobotframework className="text-white h-4 w-4" />}
+            {logo || <FiMessageSquare className="text-black h-4 w-4" />}
           </div>
           <div>
             <h2 

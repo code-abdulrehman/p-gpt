@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaUser } from "react-icons/fa";
-import { SiRobotframework } from "react-icons/si";
 import TypewriterText from './TypewriterText';
+import { FiMessageSquare } from "react-icons/fi";
 
 export type BubbleStyle = 'default' | 'modern' | 'rounded' | 'sharp' | 'bordered' | 'minimal';
 
@@ -103,7 +103,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
           {iconComponent || (role === "user" ? (
             <FaUser className="h-3 w-3 opacity-80" />
           ) : (
-            <SiRobotframework className="h-3 w-3 opacity-80" />
+            <FiMessageSquare className="h-3 w-3 opacity-80" />
           ))}
         </span>
         <strong className="text-xs opacity-80">

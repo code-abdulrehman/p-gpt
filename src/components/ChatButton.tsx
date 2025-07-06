@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
-import { FaTimes } from "react-icons/fa";
 import { FiMessageSquare } from "react-icons/fi";
+import { RxCross2 } from "react-icons/rx";
 
 interface ChatButtonProps {
   isOpen: boolean;
@@ -98,7 +98,7 @@ const ChatButton = forwardRef<HTMLButtonElement, ChatButtonProps>(({
       style={style}
     >
       {isOpen ? (
-        <FaTimes className="text-white h-1/2 w-1/2" />
+        <RxCross2 className="text-white h-1/2 w-1/2" />
       ) : (
         <div className="flex items-center justify-center space-x-1">
           {logo || <FiMessageSquare className="text-white h-6 w-6" />}

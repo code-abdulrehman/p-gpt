@@ -3,8 +3,10 @@ import { FaExclamationTriangle } from "react-icons/fa";
 import { SiRobotframework } from "react-icons/si";
 import { 
   PGPTThemeConfig, THEME_CONFIGS, DEFAULT_HEADER_TEXT, 
-  DEFAULT_SYSTEM_MESSAGES, DEFAULT_BUTTON_POSITION,
-  PGPTCustomStyles, STORAGE_TYPES, APPEARANCE_MODES, OPEN_TRIGGERS
+  DEFAULT_FOOTER_TEXT, DEFAULT_SYSTEM_MESSAGES, DEFAULT_BUTTON_POSITION,
+  DEFAULT_THEME, ICON_SIZES, STORAGE_TYPES, APPEARANCE_MODES, OPEN_TRIGGERS,
+  PGPTCustomStyles,
+  type PositionType
 } from "../utils/common";
 import { ChatMessage, sendMessage, getModelsForProvider } from "../utils/api";
 
@@ -85,21 +87,6 @@ interface ClassesConfig {
   button?: string;
 }
 
-// Position types
-type PositionType = 
-  | 'top-left'
-  | 'top-right'
-  | 'bottom-left'
-  | 'bottom-right'
-  | 'center'
-  | 'left-full-height'
-  | 'right-full-height'
-  | 'top-full-width'
-  | 'bottom-full-width'
-  | 'fixed'
-  | 'fullscreen'
-  | 'custom';
-
 /**
  * Main PGPT component props
  */
@@ -139,6 +126,8 @@ interface PGPTProps {
   llmProvider?: string;
   role?: string;
   rules?: string[];
+  includeHistory?: boolean;
+  contextLength?: number;
   
   // Sizing Props
   minHeight?: string;
@@ -168,7 +157,7 @@ const PGPT: React.FC<PGPTProps> = ({
   // Core Props
   apiKey,
   routerConfig,
-  theme = 'blue',
+  theme = 'silver',
   appearance = 'light',
   model = 'gpt-4o',
   position = DEFAULT_BUTTON_POSITION,
@@ -200,10 +189,12 @@ const PGPT: React.FC<PGPTProps> = ({
   llmProvider = 'OpenAI',
   role = 'assistant',
   rules = [],
+  includeHistory = false,
+  contextLength = 10,
   
   // Sizing Props
   minHeight = '28rem',
-  maxHeight = '80vh',
+  maxHeight = '400px',
   fixedHeight = '',
   
   // Layout Props
@@ -278,7 +269,7 @@ const PGPT: React.FC<PGPTProps> = ({
   const isDarkMode = appearance === APPEARANCE_MODES.DARK;
   
   // Theme object from configuration with dark mode support
-  const baseThemeConfig: PGPTThemeConfig = THEME_CONFIGS[currentTheme] || THEME_CONFIGS.blue;
+  const baseThemeConfig: PGPTThemeConfig = THEME_CONFIGS[currentTheme] || THEME_CONFIGS[DEFAULT_THEME];
   const themeConfig: PGPTThemeConfig = isDarkMode && baseThemeConfig.darkMode 
     ? baseThemeConfig.darkMode 
     : baseThemeConfig;
@@ -290,12 +281,8 @@ const PGPT: React.FC<PGPTProps> = ({
 
   // Position styles and classes for the button
   const positionClasses: Record<string, string> = {
-    'top-left': 'top-4 left-4',
-    'top-right': 'top-4 right-4',
     'bottom-left': 'bottom-4 left-4',
     'bottom-right': 'bottom-4 right-4',
-    'center': 'top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2',
-    'fixed': 'top-4 right-1/2 transform translate-x-1/2',
   };
 
   // Get storage key based on theme and provider
@@ -346,26 +333,6 @@ const PGPT: React.FC<PGPTProps> = ({
       };
     }
     
-    if (positionType === 'left-full-height' || positionType === 'right-full-height') {
-      return {
-        position: 'fixed',
-        [positionType === 'left-full-height' ? 'left' : 'right']: '4px',
-        top: '50%',
-        transform: 'translateY(-50%)',
-        zIndex: 50,
-      };
-    }
-    
-    if (positionType === 'top-full-width' || positionType === 'bottom-full-width') {
-      return {
-        position: 'fixed',
-        [positionType === 'top-full-width' ? 'top' : 'bottom']: '4px',
-        left: '50%',
-        transform: 'translateX(-50%)',
-        zIndex: 50,
-      };
-    }
-    
     if (positionType === 'fullscreen') {
       return {
         position: 'fixed',
@@ -380,19 +347,6 @@ const PGPT: React.FC<PGPTProps> = ({
 
   // Get chat window position styles based on icon position
   const getChatWindowPositionStyles = (): React.CSSProperties => {
-    // For center position, always show popup in center regardless of button position
-    if (positionType === 'center') {
-      return {
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '80vw',
-        maxWidth: '600px',
-        height: '80vh',
-      };
-    }
-    
     // Custom position with offsets
     if (hasCustomPosition && customPos) {
       const offsetX = customPos.offsetX || 0;
@@ -406,64 +360,13 @@ const PGPT: React.FC<PGPTProps> = ({
         top: typeof customPos.y === 'number' 
           ? `calc(${customPos.y}px + ${typeof offsetY === 'number' ? `${offsetY}px` : offsetY})` 
           : `calc(${customPos.y} + ${typeof offsetY === 'number' ? `${offsetY}px` : offsetY})`,
-        width: chatLayout === 'popup' ? '80vw' : '350px',
+        width: chatLayout === 'popup' ? '80vw' : '400px',
         height: chatLayout === 'popup' ? '80vh' : styles?.chatContainer?.minHeight || fixedHeight,
       };
     }
     
     // Position-specific styles
     switch (positionType) {
-      case 'fixed':
-        return {
-          position: 'fixed',
-          top: '80px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '80vw',
-          maxWidth: '600px',
-          height: '70vh',
-        };
-        
-      case 'left-full-height':
-        return {
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '350px',
-          height: '100vh',
-          borderRadius: 0,
-        };
-        
-      case 'right-full-height':
-        return {
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          width: '350px',
-          height: '100vh',
-          borderRadius: 0,
-        };
-        
-      case 'top-full-width':
-        return {
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '350px',
-          borderRadius: 0,
-        };
-        
-      case 'bottom-full-width':
-        return {
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          width: '100vw',
-          height: '350px',
-          borderRadius: 0,
-        };
-        
       case 'fullscreen':
         return {
           position: 'fixed',
@@ -475,30 +378,12 @@ const PGPT: React.FC<PGPTProps> = ({
           zIndex: 50,
         };
         
-      case 'top-left':
-        return {
-          position: 'fixed',
-          top: '60px',
-          left: '20px',
-          width: '350px',
-          height: styles?.chatContainer?.minHeight || fixedHeight,
-        };
-        
-      case 'top-right':
-        return {
-          position: 'fixed',
-          top: '60px',
-          right: '20px',
-          width: '350px',
-          height: styles?.chatContainer?.minHeight || fixedHeight,
-        };
-        
       case 'bottom-left':
         return {
           position: 'fixed',
           bottom: '74px',
           left: '20px',
-          width: '350px',
+          width: '400px',
           height: styles?.chatContainer?.minHeight || fixedHeight,
         };
         
@@ -507,7 +392,7 @@ const PGPT: React.FC<PGPTProps> = ({
           position: 'fixed',
           bottom: '74px',
           right: '20px',
-          width: '350px',
+          width: '400px',
           height: styles?.chatContainer?.minHeight || fixedHeight,
         };
         
@@ -516,7 +401,7 @@ const PGPT: React.FC<PGPTProps> = ({
           position: 'fixed',
           bottom: '74px',
           right: '20px',
-          width: '350px',
+          width: '400px',
           height: styles?.chatContainer?.minHeight || fixedHeight,
         };
     }
@@ -657,25 +542,41 @@ const PGPT: React.FC<PGPTProps> = ({
       onSendMessage(input);
     }
     
-    // Add system message if this is the first user message
-    const updatedMessages = [...messages];
-    if (messages.length === 0 || (messages.length === 1 && messages[0].role === 'bot')) {
-      updatedMessages.push({ role: "system", content: finalSystemMsg });
-    }
-    
-    // Add user message to conversation
-    updatedMessages.push(userMessage);
+    // Add user message to conversation (for UI display)
+    const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setInput("");
     setLoading(true);
 
     try {
+      // For API calls, only send system message and latest user message by default
+      // This prevents rate limiting and reduces token usage
+      let apiMessages: ChatMessage[] = [
+        { role: "system", content: finalSystemMsg },
+        userMessage
+      ];
+
+      // If includeHistory is true, add recent chat history for context
+      if (includeHistory && messages.length > 0) {
+        // Get recent messages (excluding system messages) for context
+        const recentMessages = messages
+          .filter(msg => msg.role !== 'system')
+          .slice(-contextLength); // Take last N messages
+        
+        // Combine system message, recent history, and current user message
+        apiMessages = [
+          { role: "system", content: finalSystemMsg },
+          ...recentMessages,
+          userMessage
+        ];
+      }
+
       // Send message to API using either direct API key or REST API route
       const response: ChatMessage | null = await sendMessage({
         provider: useRestApi ? "" : currentProvider,
         apiKey: apiKey || "",
         model: currentModel,
-        messages: updatedMessages,
+        messages: apiMessages, // Send system + latest user message (+ optional history)
         temperature: 0.7,
         maxTokens: routerConfig?.maxTokens || 1000,
         routerConfig: routerConfig ? {
@@ -687,7 +588,7 @@ const PGPT: React.FC<PGPTProps> = ({
       });
 
       if (response) {
-        // Add bot response to conversation
+        // Add bot response to conversation (for UI display)
         setMessages(prev => [...prev, response]);
         
         // Call onReceiveMessage callback if provided
@@ -695,7 +596,7 @@ const PGPT: React.FC<PGPTProps> = ({
           onReceiveMessage(response);
         }
         
-        // Save messages to storage if enabled
+        // Save messages to storage if enabled (save full conversation for UI)
         if (storage.type !== STORAGE_TYPES.NONE) {
           const storageKey = getStorageKey();
           storageHandlers.setItem(
@@ -853,19 +754,11 @@ const PGPT: React.FC<PGPTProps> = ({
     <div className={`pgpt-container ${classes.container || ''}`}>
       {/* Chat toggle button - always visible */}
       <div 
-        className={!hasCustomPosition && 
-          positionType !== 'left-full-height' && 
-          positionType !== 'right-full-height' && 
-          positionType !== 'top-full-width' && 
-          positionType !== 'bottom-full-width' 
+        className={!hasCustomPosition && positionType !== 'fullscreen' 
             ? `fixed ${positionClasses[positionType as keyof typeof positionClasses] || ''} z-50` 
             : ''
         } 
-        style={hasCustomPosition || 
-          positionType === 'left-full-height' || 
-          positionType === 'right-full-height' || 
-          positionType === 'top-full-width' || 
-          positionType === 'bottom-full-width' 
+        style={hasCustomPosition || positionType === 'fullscreen' 
             ? getButtonPositionStyles() 
             : {}
         }
