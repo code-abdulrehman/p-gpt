@@ -6,19 +6,15 @@
     "skipLibCheck": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": false,
-    "emitDeclarationOnly": true,
+    "isolatedModules": true,
     "jsx": "react-jsx",
     "strict": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
-    "declaration": true,
-    "declarationDir": "dist",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "outDir": "dist",
-    "types": ["node"]
+    "outDir": "dist"
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.js", "src/**/*.jsx"],
   "exclude": ["node_modules", "dist"]

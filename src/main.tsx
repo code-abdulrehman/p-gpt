@@ -18,6 +18,3 @@ root.render(
     <LandingPage />
   </StrictMode>
 );
-
-// Export the components for library usage
-export { default as PGPT } from './components/PGPT';
