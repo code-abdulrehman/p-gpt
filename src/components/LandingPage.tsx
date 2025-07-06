@@ -55,7 +55,7 @@ const Toast = ({ message, type, onClose }: ToastProps) => {
 const basicInstallCode = `npm install p-gpt`;
 
 const basicUsageCode = `import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/index.css';
+import 'p-gpt/dist/assets/index-CMxICLrA.css';
 
 function App() {
   return (
@@ -64,7 +64,7 @@ function App() {
 }`;
 
 const advancedUsageCode = `import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/index.css';
+import 'p-gpt/dist/assets/index-CMxICLrA.css';
 
 function App() {
   return (
@@ -83,7 +83,7 @@ function App() {
 }`;
 
 const geminiUsageCode = `import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/index.css';
+import 'p-gpt/dist/assets/index-CMxICLrA.css';
 
 function App() {
   return (
@@ -103,7 +103,7 @@ function App() {
 }`;
 
 const routerUsageCode = `import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/index.css';
+import 'p-gpt/dist/assets/index-CMxICLrA.css';
 
 function App() {
   return (
@@ -120,7 +120,7 @@ function App() {
 }`;
 
 const contextUsageCode = `import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/index.css';
+import 'p-gpt/dist/assets/index-CMxICLrA.css';
 
 function App() {
   return (

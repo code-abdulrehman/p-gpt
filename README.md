@@ -35,7 +35,7 @@ pnpm add p-gpt
 
 ```jsx
 import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/index.css';
+import 'p-gpt/dist/assets/index-CMxICLrA.css';
 
 function App() {
   return (
@@ -52,7 +52,7 @@ function App() {
 
 ```jsx
 import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/index.css';
+import 'p-gpt/dist/assets/index-CMxICLrA.css';
 
 function App() {
   return (
@@ -75,7 +75,7 @@ function App() {
 
 ```jsx
 import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/index.css';
+import 'p-gpt/dist/assets/index-CMxICLrA.css';
 
 function App() {
   return (
