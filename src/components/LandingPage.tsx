@@ -1260,7 +1260,7 @@ const LandingPage = () => {
               <div className="absolute inset-0">
                 <PGPT
                   key={demoChatKey}
-                  apiKey="AIzaSyDLFV_DrBTBJgVg6rdptQ96VLHQY9QaWzE"
+                  apiKey="AIzaSyDLFV_DrBTBJgVg6rdptQ96VLHQY9QaWzE" //gemini free api
                   llmProvider="Gemini"
                   model="gemini-1.5-flash"
                   theme={demoTheme}
