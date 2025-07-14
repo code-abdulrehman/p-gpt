@@ -1,5 +1,5 @@
-// Main PGPT component
-export { default as PGPT } from './components/PGPT';
+// This file is no longer needed for a website. 
+// We're using main.tsx as the entry point
 
 // Modular components
 export { default as ChatHeader } from './components/ChatHeader';
@@ -12,17 +12,17 @@ export { default as MarkdownRenderer } from './components/MarkdownRenderer';
 export { default as MarkdownTypewriterText } from './components/MarkdownTypewriterText';
 
 // Types
-export { PGPTThemeConfig, THEME_CONFIGS } from './utils/common';
-export type { PGPTCustomStyles } from './utils/common';
+export type { PGPTThemeConfig } from './utils/common';
+export { THEME_CONFIGS } from './utils/common';
 
-// Export additional constants
+// Export constants needed by components
 export { 
   APPEARANCE_MODES,
   STORAGE_TYPES, 
   OPEN_TRIGGERS 
 } from './utils/common';
 
-// Import and re-export types from './utils/api'
+// Import and types from './utils/api'
 import type { ChatMessage, RouterConfig, SendMessageOptions } from './utils/api';
 export type { ChatMessage, RouterConfig, SendMessageOptions };
 
