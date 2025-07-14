@@ -380,6 +380,7 @@ And respond with:
 - [GitHub Repository](https://github.com/code-abdulrehman/p-gpt)
 - [NPM Package](https://www.npmjs.com/package/p-gpt)
 - [Issue Tracker](https://github.com/code-abdulrehman/p-gpt/issues)
+- [Contributing Guide](https://github.com/code-abdulrehman/p-gpt/blob/main/CONTRIBUTING.md)
 
 ## 📄 License
 
