@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FaExclamationTriangle } from "react-icons/fa";
-import { SiRobotframework } from "react-icons/si";
+import { FiMessageSquare } from "react-icons/fi";
 import { 
   PGPTThemeConfig, THEME_CONFIGS, DEFAULT_HEADER_TEXT, 
   DEFAULT_FOOTER_TEXT, DEFAULT_SYSTEM_MESSAGES, DEFAULT_BUTTON_POSITION,
@@ -142,6 +142,7 @@ interface PGPTProps {
   bubbleStyle?: 'default' | 'modern' | 'rounded' | 'sharp' | 'bordered' | 'minimal';
   loadingAnimation?: 'dots' | 'spinner' | 'pulse' | 'bar' | 'typingDots';
   bubbleAnimation?: boolean;
+  enableMarkdown?: boolean;
   
   // Event Handlers
   onSendMessage?: (message: string) => void;
@@ -205,6 +206,7 @@ const PGPT: React.FC<PGPTProps> = ({
   bubbleStyle = 'default',
   loadingAnimation = 'typingDots',
   bubbleAnimation = true,
+  enableMarkdown = true,
   
   // Event Handlers
   onSendMessage,
@@ -265,9 +267,9 @@ const PGPT: React.FC<PGPTProps> = ({
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   
-  // Get theme configuration based on appearance mode
-  const isDarkMode = appearance === APPEARANCE_MODES.DARK;
-  
+  // Determine if current theme is dark mode
+  const isDarkMode = appearance === 'dark' || (appearance === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
   // Theme object from configuration with dark mode support
   const baseThemeConfig: PGPTThemeConfig = THEME_CONFIGS[currentTheme] || THEME_CONFIGS[DEFAULT_THEME];
   const themeConfig: PGPTThemeConfig = isDarkMode && baseThemeConfig.darkMode 
@@ -649,6 +651,7 @@ const PGPT: React.FC<PGPTProps> = ({
   // Chat header
   const renderHeader = () => (
     <ChatHeader
+      positionType={positionType}
       title={contentConfig.title}
       subtitle={contentConfig.subtitle}
       onClose={closeChat}
@@ -682,17 +685,18 @@ const PGPT: React.FC<PGPTProps> = ({
   const renderMessages = () => (
     <div 
       ref={chatContainerRef}
-      className={`flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-3 relative ${classes.body || ''}`}
+      className={`flex-1 overflow-y-auto overflow-x-hidden p-4 relative flex justify-center ${classes.body || ''}`}
       style={{
         scrollbarWidth: 'thin',
         scrollbarColor: `${themeConfig.scrollThumb} ${themeConfig.scrollTrack}`,
         minHeight: chatLayout === 'normal' ? fixedHeight : maxHeight,
-        maxHeight: chatLayout === 'sidebar' ? '100%' : chatLayout === "normal" ? "400px" : chatLayout === "popup" ? "400px" : maxHeight,
+        maxHeight: positionType === 'fullscreen' ? '100%' : chatLayout === "normal" ? "400px" : chatLayout === "popup" ? "400px" : maxHeight,
         ...styles.body
       }}
     >
-      {renderNotification()}
-      
+      <div className={`${positionType === 'fullscreen' ? 'max-w-3xl h-[fit-content] pb-3' : 'w-full h-full pb-2'} space-y-3`}>
+        {renderNotification()}
+        
       {messages.filter(msg => msg.role !== 'system').map((msg, idx) => (
         <ChatBubble
           key={idx}
@@ -708,6 +712,8 @@ const PGPT: React.FC<PGPTProps> = ({
           iconComponent={msg.role === 'user' ? undefined : logo ? logo : undefined}
           style={msg.role === 'user' ? styles.userBubble : styles.botBubble}
           isLastMessage={idx === lastBotMessageIndex}
+          enableMarkdown={enableMarkdown}
+          isDarkMode={isDarkMode}
         />
       ))}
 
@@ -715,7 +721,7 @@ const PGPT: React.FC<PGPTProps> = ({
         <div className={`p-3 rounded-lg ${themeConfig.bot} self-start mr-auto text-sm ${themeConfig.shadow}`}>
           <div className="flex items-center mb-1">
             <span className="mr-2">
-              {logo || <SiRobotframework className="h-3 w-3 opacity-80" />}
+              {logo || <FiMessageSquare className="h-3 w-3 opacity-80" />}
             </span>
             <strong className="text-xs opacity-80">{contentConfig.title}</strong>
           </div>
@@ -728,13 +734,15 @@ const PGPT: React.FC<PGPTProps> = ({
       )}
       
       {/* Element to scroll to */}
-      <div ref={messagesEndRef} />
+        <div ref={messagesEndRef} />
+      </div>
     </div>
   );
 
   // Chat input area
   const renderFooter = () => (
     <ChatFooter
+      positionType={positionType}
       input={input}
       setInput={setInput}
       handleSendMessage={handleSendMessage}

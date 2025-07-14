@@ -11,6 +11,7 @@ interface ChatHeaderProps {
   logo?: React.ReactNode;
   className?: string;
   style?: React.CSSProperties;
+  positionType?: String;
 }
 
 const ChatHeader: React.FC<ChatHeaderProps> = ({
@@ -22,13 +23,14 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({
   logo,
   className = '',
   style,
+  positionType,
 }) => {
   return (
     <div 
       className={`p-2 ${themeConfig.header} border-b ${themeConfig.border} ${themeConfig.text} ${className}`}
       style={style}
     >
-      <div className="flex items-center justify-between">
+      <div className={`flex items-center justify-between ${positionType === 'fullscreen' ? 'max-w-3xl mx-auto' : 'w-full'}`}>
         <div className="flex items-center space-x-2">
           <div 
             className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center"

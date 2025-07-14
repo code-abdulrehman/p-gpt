@@ -1,6 +1,8 @@
 import React from 'react';
 import { FaUser } from "react-icons/fa";
 import TypewriterText from './TypewriterText';
+import MarkdownRenderer from './MarkdownRenderer';
+import MarkdownTypewriterText from './MarkdownTypewriterText';
 import { FiMessageSquare } from "react-icons/fi";
 
 export type BubbleStyle = 'default' | 'modern' | 'rounded' | 'sharp' | 'bordered' | 'minimal';
@@ -19,6 +21,8 @@ interface ChatBubbleProps {
   iconComponent?: React.ReactNode;
   style?: React.CSSProperties;
   isLastMessage?: boolean;
+  enableMarkdown?: boolean;
+  isDarkMode?: boolean;
 }
 
 const ChatBubble: React.FC<ChatBubbleProps> = ({
@@ -35,6 +39,8 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   iconComponent,
   style,
   isLastMessage = false,
+  enableMarkdown = true,
+  isDarkMode = false,
 }) => {
   // Get appropriate classes based on bubble style
   const getBubbleClasses = () => {
@@ -76,9 +82,33 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
   // Render the content with or without typing animation
   const renderContent = () => {
     if (role === 'bot' && isTyping && isLastMessage) {
+      if (enableMarkdown) {
+        return (
+          <MarkdownTypewriterText 
+            text={content} 
+            speed={typingSpeed}
+            themeConfig={themeConfig}
+            isDarkMode={isDarkMode}
+            className="custom-text-wrapper"
+          />
+        );
+      }
       return <TypewriterText text={content} speed={typingSpeed} />;
     }
     
+    // Use markdown rendering for bot messages if enabled
+    if (role === 'bot' && enableMarkdown) {
+      return (
+        <MarkdownRenderer 
+          content={content} 
+          themeConfig={themeConfig}
+          isDarkMode={isDarkMode}
+          className="custom-text-wrapper"
+        />
+      );
+    }
+    
+    // Fallback to plain text rendering (for user messages or when markdown is disabled)
     return (
       <div className="whitespace-pre-wrap custom-text-wrapper ">
           {
@@ -95,10 +125,10 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({
 
   return (
     <div
-      className={`p-3 text-sm max-w-[80%] ${getBubbleClasses()} ${getAnimationClasses()} ${className}`}
+      className={`p-3 text-sm w-[fit-content] max-w-[80%] ${getBubbleClasses()} ${getAnimationClasses()} ${className}`}
       style={style}
     >
-      <div className="flex items-center mb-1">
+      <div className={`flex items-center mb-1 ${role === 'user' ? 'justify-end' : 'justify-start'}`}>
         <span className="mr-2">
           {iconComponent || (role === "user" ? (
             <FaUser className="h-3 w-3 opacity-80" />

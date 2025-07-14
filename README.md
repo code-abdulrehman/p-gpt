@@ -35,13 +35,13 @@ pnpm add p-gpt
 
 ```jsx
 import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/assets/index-CMxICLrA.css';
+import 'dist/index.css';
 
 function App() {
   return (
     <PGPT 
       apiKey="YOUR_API_KEY" 
-      theme="chatgpt"
+      theme="silver"
       appearance="dark"
     />
   );
@@ -52,7 +52,7 @@ function App() {
 
 ```jsx
 import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/assets/index-CMxICLrA.css';
+import 'dist/index.css';
 
 function App() {
   return (
@@ -75,7 +75,7 @@ function App() {
 
 ```jsx
 import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/assets/index-CMxICLrA.css';
+import 'dist/index.css';
 
 function App() {
   return (
@@ -94,19 +94,16 @@ function App() {
 
 ## 🎨 Available Themes
 
-P-GPT includes 6 beautiful themes, each supporting both light and dark modes:
+P-GPT includes 3 beautiful themes, each supporting both light and dark modes:
 
-- **`chatgpt`** - OpenAI's signature green theme
-- **`grok`** - X's Grok orange/red theme  
+- **`glass`** - Modern glassmorphism theme with backdrop blur effects
 - **`silver`** - Classic silver/gray theme
-- **`premium`** - Purple gradient premium theme
 - **`titanium`** - Modern zinc/titanium theme
-- **`claude`** - Anthropic's Claude purple theme
 
 ```jsx
 <PGPT 
-  theme="premium"  
-  appearance="dark"  // "light" or "dark"
+  theme="glass"  
+  appearance="dark"  // "light", "dark", or "system"
 />
 ```
 
@@ -234,12 +231,14 @@ And respond with:
   theme="silver"
   appearance="dark"
   buttonSize="medium" // "small", "medium", "large"
-  buttonStyle="circle" // "circle", "rounded", "square", "pill"
+  buttonStyle="circle" // "circle", "rounded", "square", "sharp", "pill"
   defaultOpen={false}
   openTrigger="click" // "click" or "hover"
   enableTypingAnimation={true}
   bubbleStyle="modern" // "default", "modern", "rounded", "sharp", "bordered", "minimal"
   loadingAnimation="typingDots" // "dots", "spinner", "pulse", "bar", "typingDots"
+  bubbleAnimation={true}
+  enableMarkdown={true}
 />
 ```
 
@@ -291,7 +290,7 @@ And respond with:
 |------|------|---------|-------------|
 | `apiKey` | string | - | OpenAI/Gemini API key |
 | `routerConfig` | object | - | Custom API endpoint configuration |
-| `theme` | string | "silver" | UI theme (chatgpt, grok, silver, premium, titanium, claude) |
+| `theme` | string | "silver" | UI theme (glass, silver, titanium) |
 | `appearance` | string | "light" | Appearance mode: "light", "dark", or "system" |
 | `model` | string | "gpt-4o" | AI model to use |
 | `position` | string/object | "bottom-right" | Chat position (bottom-left, bottom-right, fullscreen, or custom object) |
@@ -311,11 +310,11 @@ And respond with:
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `useTextarea` | boolean | true | Use textarea instead of input field |
+| `useTextarea` | boolean | false | Use textarea instead of input field |
 | `enableTypingAnimation` | boolean | true | Enable typewriter effect for responses |
 | `defaultOpen` | boolean | false | Open chat automatically on load |
 | `openTrigger` | string | "click" | How to open chat: "click" or "hover" |
-| `isCloseable` | boolean | true | Allow users to close the chat |
+| `isCloseable` | boolean | false | Allow users to close the chat |
 
 ### Advanced Props
 
@@ -345,9 +344,7 @@ And respond with:
 | `classes` | object | {} | Custom CSS class overrides |
 | `styles` | object | {} | Custom inline style overrides |
 | `buttonSize` | string | "medium" | Button size: "small", "medium", "large" |
-| `buttonStyle` | string | "circle" | Button shape: "circle", "rounded", "square", "pill" |
-| `bubbleStyle` | string | "default" | Message bubble style |
-| `loadingAnimation` | string | "typingDots" | Loading animation type |
+| `buttonStyle` | string | "circle" | Button shape: "circle", "rounded", "square", "sharp", "pill" |
 
 ### Layout Props
 
@@ -355,8 +352,19 @@ And respond with:
 |------|------|---------|-------------|
 | `chatLayout` | string | "normal" | Layout type: "normal", "popup", "sidebar" |
 | `minHeight` | string | "28rem" | Minimum chat height |
-| `maxHeight` | string | "80vh" | Maximum chat height |
-| `fixedHeight` | string | "400px" | Fixed chat height |
+| `maxHeight` | string | "400px" | Maximum chat height |
+| `fixedHeight` | string | "" | Fixed chat height |
+| `showLabelWithLogo` | boolean | false | Show first letter of title instead of logo |
+
+### UI Options
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `bubbleStyle` | string | "default" | Message bubble style: "default", "modern", "rounded", "sharp", "bordered", "minimal" |
+| `loadingAnimation` | string | "typingDots" | Loading animation: "dots", "spinner", "pulse", "bar", "typingDots" |
+| `bubbleAnimation` | boolean | true | Enable animation effects for message bubbles |
+| `enableMarkdown` | boolean | true | Enable markdown rendering for bot responses |
+| `logo` | ReactNode | - | Custom logo/icon component |
 
 ### Event Handlers
 

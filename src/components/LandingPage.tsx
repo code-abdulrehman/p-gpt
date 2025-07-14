@@ -17,8 +17,8 @@ type PositionType =
 
 // Define theme types to match available themes in PGPT
 type ThemeType = 
+  | 'glass'
   | 'silver'
-  | 'premium'
   | 'titanium';
 
 // Toast notification component
@@ -55,7 +55,7 @@ const Toast = ({ message, type, onClose }: ToastProps) => {
 const basicInstallCode = `npm install p-gpt`;
 
 const basicUsageCode = `import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/assets/index-CMxICLrA.css';
+import 'dist/index.css';
 
 function App() {
   return (
@@ -64,7 +64,7 @@ function App() {
 }`;
 
 const advancedUsageCode = `import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/assets/index-CMxICLrA.css';
+import 'dist/index.css';
 
 function App() {
   return (
@@ -83,7 +83,7 @@ function App() {
 }`;
 
 const geminiUsageCode = `import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/assets/index-CMxICLrA.css';
+import 'dist/index.css';
 
 function App() {
   return (
@@ -91,7 +91,7 @@ function App() {
       apiKey="YOUR_GEMINI_API_KEY" 
       llmProvider="Gemini"
       model="gemini-1.5-pro"
-      theme="premium"
+      theme="glass"
       appearance="light"
       content={{
         title: "AI Assistant",
@@ -103,7 +103,7 @@ function App() {
 }`;
 
 const routerUsageCode = `import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/assets/index-CMxICLrA.css';
+import 'dist/index.css';
 
 function App() {
   return (
@@ -120,13 +120,12 @@ function App() {
 }`;
 
 const contextUsageCode = `import { PGPT } from 'p-gpt';
-import 'p-gpt/dist/assets/index-CMxICLrA.css';
+import 'dist/index.css';
 
 function App() {
   return (
     <PGPT 
       apiKey="YOUR_API_KEY"
-      theme="premium"
       includeHistory={true}
       contextLength={5}
       content={{
@@ -146,7 +145,7 @@ const propsData = [
         name: "apiKey",
         type: "string",
         default: "undefined",
-        description: "Your OpenAI API key",
+        description: "Your OpenAI or Gemini API key",
         options: []
       },
       {
@@ -167,7 +166,7 @@ const propsData = [
         default: "'silver'",
         description: "Theme name",
         options: [
-          "silver", "premium", "titanium"
+          "glass", "silver", "titanium"
         ]
       },
       {
@@ -181,8 +180,8 @@ const propsData = [
         name: "model",
         type: "string",
         default: "'gpt-4o'",
-        description: "AI model to use (OpenAI: gpt-4o, gpt-4, gpt-3.5-turbo; Gemini: gemini-1.5-pro, gemini-1.5-flash, gemini-pro)",
-        options: ["gpt-4o", "gpt-4", "gpt-3.5-turbo", "gpt-4-turbo", "gemini-1.5-pro", "gemini-1.5-flash", "gemini-pro", "gemini-pro-vision"]
+        description: "AI model to use (OpenAI: gpt-4o, gpt-4-turbo, gpt-3.5-turbo; Gemini: gemini-1.5-pro, gemini-1.5-flash, gemini-pro)",
+        options: ["gpt-4o", "gpt-4-turbo", "gpt-3.5-turbo", "gemini-1.5-pro", "gemini-1.5-flash", "gemini-pro", "gemini-pro-vision"]
       },
       {
         name: "position",
@@ -274,7 +273,7 @@ const propsData = [
       {
         name: "useTextarea",
         type: "boolean",
-        default: "true",
+        default: "false",
         description: "Use textarea (multi-line) instead of input field",
         options: ["true", "false"]
       },
@@ -302,7 +301,7 @@ const propsData = [
       {
         name: "isCloseable",
         type: "boolean",
-        default: "true",
+        default: "false",
         description: "Allow users to close the chat",
         options: ["true", "false"]
       }
@@ -364,6 +363,13 @@ const propsData = [
         default: "'medium'",
         description: "Size of chat button: 'small', 'medium', or 'large'",
         options: ["small", "medium", "large"]
+      },
+      {
+        name: "buttonStyle",
+        type: "string",
+        default: "'circle'",
+        description: "Shape of chat button: 'circle', 'rounded', 'square', 'sharp', or 'pill'",
+        options: ["circle", "rounded", "square", "sharp", "pill"]
       }
     ]
   },
@@ -427,14 +433,14 @@ const propsData = [
       {
         name: "maxHeight",
         type: "string",
-        default: "'80vh'",
+        default: "'400px'",
         description: "Maximum height of chat window",
         options: []
       },
       {
         name: "fixedHeight",
         type: "string",
-        default: "'400px'",
+        default: "''",
         description: "Fixed height for normal layout",
         options: []
       },
@@ -443,6 +449,39 @@ const propsData = [
         type: "boolean",
         default: "false",
         description: "Show the first letter of title instead of logo",
+        options: ["true", "false"]
+      }
+    ]
+  },
+  {
+    category: "UI Options",
+    props: [
+      {
+        name: "bubbleStyle",
+        type: "string",
+        default: "'default'",
+        description: "Message bubble style: 'default', 'modern', 'rounded', 'sharp', 'bordered', or 'minimal'",
+        options: ["default", "modern", "rounded", "sharp", "bordered", "minimal"]
+      },
+      {
+        name: "loadingAnimation",
+        type: "string",
+        default: "'typingDots'",
+        description: "Loading animation type: 'dots', 'spinner', 'pulse', 'bar', or 'typingDots'",
+        options: ["dots", "spinner", "pulse", "bar", "typingDots"]
+      },
+      {
+        name: "bubbleAnimation",
+        type: "boolean",
+        default: "true",
+        description: "Enable animation effects for message bubbles",
+        options: ["true", "false"]
+      },
+      {
+        name: "enableMarkdown",
+        type: "boolean",
+        default: "true",
+        description: "Enable markdown rendering for bot responses",
         options: ["true", "false"]
       }
     ]
@@ -619,7 +658,7 @@ const LandingPage = () => {
   const [demoChatOpen, setDemoChatOpen] = useState(false);
   
   // Define available demo themes - Only 3 supported themes
-  const availableThemes: ThemeType[] = ['silver', 'premium', 'titanium'];
+  const availableThemes: ThemeType[] = ['glass', 'silver', 'titanium'];
 
   // Define available positions - Only 3 supported positions
   const availablePositions: PositionType[] = ['bottom-left', 'bottom-right', 'fullscreen'];
@@ -627,7 +666,7 @@ const LandingPage = () => {
   // Define color variables based on selected primary color
   const primaryBg = primaryColor === 'indigo' ? 'bg-indigo-600' : 'bg-teal-600';
   const primaryHoverBg = primaryColor === 'indigo' ? 'hover:bg-indigo-700' : 'hover:bg-teal-700';
-  const primaryText = primaryColor === 'indigo' ? 'text-indigo-600' : 'text-teal-600';
+  const primaryText = primaryColor === 'indigo' ? darkMode ? 'text-indigo-600' : 'text-indigo-600' : darkMode ? 'text-teal-600' : 'text-teal-600';
   const primaryTextLight = primaryColor === 'indigo' ? 'text-indigo-400' : 'text-teal-400';
   const primaryLightBg = primaryColor === 'indigo' ? 'bg-indigo-100' : 'bg-teal-100';
   const primaryHoverLightBg = primaryColor === 'indigo' ? 'hover:bg-indigo-200' : 'hover:bg-teal-200';
@@ -724,7 +763,6 @@ const LandingPage = () => {
   const getThemeColorClass = (theme: ThemeType): string => {
     switch (theme) {
       case 'silver': return 'text-gray-400';
-      case 'premium': return 'text-purple-500';
       case 'titanium': return 'text-zinc-500';
       default: return 'text-gray-400';
     }
@@ -852,12 +890,12 @@ const LandingPage = () => {
               </div>
 
               <div className="flex flex-wrap gap-4 justify-center md:justify-start">
-                <a
-                  href="#get-started"
+               <a
+                  href="#documentation"
                   className={`px-6 py-3 rounded-lg font-medium text-lg transform transition hover:scale-105 ${darkMode ? 'bg-gray-800 hover:bg-gray-700 border border-gray-700' : 'bg-gray-100 hover:bg-gray-200 border border-gray-300'} ${darkMode ? 'text-white' : 'text-gray-700'}`}
                 >
                   <span className={`${primaryText} flex items-center gap-1`}>
-                    Get Started
+                    Documentation
                   </span>
                 </a>
               </div>
@@ -890,7 +928,7 @@ const LandingPage = () => {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-16" id="get-started">
+      <div className="container mx-auto px-4 py-16" id="documentation">
         <div className="grid md:grid-cols-12 gap-8">
           {/* Side Navigation */}
           <div className="md:col-span-3">
@@ -948,9 +986,6 @@ const LandingPage = () => {
                   <ul className="list-disc pl-6 space-y-2">
                     <li>
                       <code className={`${darkMode ? 'bg-gray-200 dark:bg-gray-700' : 'bg-gray-200'} px-2 py-1 rounded`}>tailwindcss</code> - For styling customization
-                    </li>
-                    <li>
-                      <code className={`${darkMode ? 'bg-gray-200 dark:bg-gray-700' : 'bg-gray-200'} px-2 py-1 rounded`}>prism-react-renderer</code> - For code highlighting in chat
                     </li>
                     <li>
                       <code className={`${darkMode ? 'bg-gray-200 dark:bg-gray-700' : 'bg-gray-200'} px-2 py-1 rounded`}>openai</code> - If using the OpenAI SDK directly
@@ -1104,13 +1139,13 @@ const LandingPage = () => {
                 <div className={`p-4 rounded-lg ${darkMode ? 'bg-gray-800' : 'bg-white shadow'}`}>
                   <h3 className={`text-xl font-semibold mb-3 ${darkMode ? primaryTextLight : primaryText}`}>Available Themes</h3>
                   <ul className="space-y-2">
+                  <li className="flex items-center">
+                      <span className="w-6 h-6 rounded-full bg-slate-100/40 backdrop-blur-sm border border-white/10 mr-2"></span>
+                      <span>glass</span>
+                    </li>
                     <li className="flex items-center">
                       <span className="w-6 h-6 rounded-full bg-gray-400 mr-2"></span>
                       <span>silver</span>
-                    </li>
-                    <li className="flex items-center">
-                      <span className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 mr-2"></span>
-                      <span>premium</span>
                     </li>
                     <li className="flex items-center">
                       <span className="w-6 h-6 rounded-full bg-zinc-500 mr-2"></span>
@@ -1209,18 +1244,18 @@ const LandingPage = () => {
 
           {/* Interactive demo with theme and position selectors */}
           <div className={`p-8 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-gray-50'} mb-16`}>
-            <div className="flex flex-wrap gap-6 mb-8 justify-center">
-              <div>
-                <label className={`block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Theme</label>
+            <div className={`flex flex-wrap gap-6 mb-8 justify-center items-center rounded-xl ${demoTheme === 'glass' ? "bg-[url('/flower.jpg')] bg-cover bg-center" : " "} p-4`}>
+              <div className="h-full">
+                {/* <label className={`block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Theme</label> */}
                 <div className="flex flex-wrap gap-2">
                   {availableThemes.map(theme => (
                     <button
                       key={theme}
                       onClick={() => handleThemeChange(theme)}
-                      className={`px-3 py-1 rounded-lg text-white capitalize transition-all ${theme === demoTheme ? 'ring-2 ring-white ring-opacity-70 font-medium shadow-lg' : 'opacity-80 hover:opacity-100'
-                        } ${theme === 'silver' ? 'bg-gray-400' :
-                          theme === 'premium' ? 'bg-gradient-to-r from-purple-500 to-blue-500' :
-                            theme === 'titanium' ? 'bg-zinc-500' :
+                      className={`px-3 py-1 rounded-lg capitalize transition-all ${theme === demoTheme ? 'ring-2 ring-white ring-opacity-70 font-medium shadow-lg text-white border-white font-bold' : 'opacity-80 hover:opacity-100'
+                        } ${theme === 'silver' ? 'bg-gray-400 text-white' :
+                            theme === 'titanium' ? 'bg-zinc-500 text-white' :
+                            theme === 'glass' ? (darkMode ? 'bg-slate-100/10 backdrop-blur-sm text-white' : 'bg-slate-100/10 backdrop-blur-sm border border-black text-black') :
                               'bg-gray-400'
                         }`}
                     >
@@ -1230,8 +1265,8 @@ const LandingPage = () => {
                 </div>
               </div>
 
-              <div>
-                <label className={`block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Position</label>
+              <div className="h-full">
+                {/* <label className={`block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Position</label> */}
                 <div className="flex flex-wrap gap-2">
                   {availablePositions.map(pos => (
                     <button
@@ -1267,12 +1302,13 @@ const LandingPage = () => {
                   bubbleStyle="modern"
                   appearance={darkMode ? "dark" : "light"}
                   content={{
-                    title: "PGPT Demo",
+                    title: "PGPT",
                     subtitle: "React Component",
                     welcomeMessage: "👋 Hi there! I'm a demo of the PGPT component. Try asking about different features or customization options!",
-                    systemMessage: "You are a helpful assistant demonstrating the PGPT React component. Provide enthusiastic, concise answers about how to use this component with the selected theme and position."
+                    systemMessage: "You are a helpful assistant demonstrating the PGPT React component. Always use markdown formatting in your responses including **bold text**, `inline code`, ## headings, bullet points, and other markdown features to showcase the rich text capabilities. Provide enthusiastic, detailed answers about how to use this component."
                   }}
-                  enableTypingAnimation={true}
+                  enableTypingAnimation={false}
+                  enableMarkdown={true}
                   defaultOpen={false}
                   position={demoPosition}
                   chatLayout="popup"
@@ -1287,9 +1323,7 @@ const LandingPage = () => {
               <div className={`inline-block px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-white'} ${darkMode ? 'text-gray-300' : 'text-gray-700'} shadow-sm`}>
                 <span className="font-medium">Current Configuration: </span>
                 <span className="italic">Theme: <span className={getThemeColorClass(demoTheme)}>{demoTheme}</span></span> |
-                <span className="italic">Position: {demoPosition}</span> |
-                <span className="italic">Layout: popup</span> |
-                <span className="italic">Key: {demoChatKey}</span>
+                <span className="italic">Position: {demoPosition}</span>
               </div>
             </div>
           </div>
@@ -1356,14 +1390,16 @@ const LandingPage = () => {
               <p className={`text-sm mb-4 ${darkMode ? 'text-gray-300' : 'text-white text-opacity-90'}`}>
                 Have questions or feedback? We'd love to hear from you!
               </p>
+              
               <a
                 href="mailto:code.abdulrehman@gmail.com"
-                className={`inline-block px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-white bg-opacity-20 hover:bg-opacity-30'} transition-colors`}
+                className={`inline-block px-4 py-2 rounded-lg ${darkMode ? 'bg-gray-800 hover:bg-gray-700 border border-gray-700' : 'bg-gray-100 hover:bg-gray-200 border border-gray-300'}`}
               >
                 <span className={`${primaryText} flex items-center gap-1`}>
                   Contact Us
                 </span>
               </a>
+              
             </div>
           </div>
           <div className="mt-12 pt-6 border-t border-white border-opacity-20 text-center">

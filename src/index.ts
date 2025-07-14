@@ -8,6 +8,8 @@ export { default as ChatButton } from './components/ChatButton';
 export { default as ChatBubble } from './components/ChatBubble';
 export { default as LoadingAnimation } from './components/LoadingAnimation';
 export { default as TypewriterText } from './components/TypewriterText';
+export { default as MarkdownRenderer } from './components/MarkdownRenderer';
+export { default as MarkdownTypewriterText } from './components/MarkdownTypewriterText';
 
 // Types
 export { PGPTThemeConfig, THEME_CONFIGS } from './utils/common';
@@ -82,6 +84,7 @@ export interface PGPTProps {
   warningColor?: string;
   enableTypingAnimation?: boolean;
   defaultOpen?: boolean; // Control if modal is open by default
+  enableMarkdown?: boolean; // Enable markdown rendering for bot responses
 }
 
 // Export the API utilities

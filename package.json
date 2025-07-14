@@ -54,10 +54,10 @@
     "tailwindcss": "^4.0.17"
   },
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.24.0",
     "@babel/preset-env": "^7.24.0",
     "@babel/preset-react": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
-    "@babel/plugin-transform-runtime": "^7.24.0",
     "@eslint/js": "^9.21.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^28.0.3",

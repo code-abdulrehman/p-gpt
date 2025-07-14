@@ -100,7 +100,7 @@ const ChatButton = forwardRef<HTMLButtonElement, ChatButtonProps>(({
       {isOpen ? (
         <RxCross2 className="text-white h-1/2 w-1/2" />
       ) : (
-        <div className="flex items-center justify-center space-x-1">
+        <div className={`flex items-center justify-center space-x-1 ${themeConfig.icon} backdrop-shadow-sm`}>
           {logo || <FiMessageSquare className="text-white h-6 w-6" />}
           {showLabel && (
             <span className="text-white font-medium whitespace-nowrap">

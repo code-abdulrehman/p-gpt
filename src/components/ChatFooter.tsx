@@ -16,6 +16,7 @@ interface ChatFooterProps {
   customSendButton?: React.ReactNode;
   showSendButton?: boolean;
   autofocus?: boolean;
+  positionType?: String;
 }
 
 const ChatFooter: React.FC<ChatFooterProps> = ({
@@ -33,6 +34,7 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
   customSendButton,
   showSendButton = true,
   autofocus = true,
+  positionType,
 }) => {
   const inputRef = useRef<HTMLTextAreaElement | HTMLInputElement>(null);
 
@@ -51,8 +53,8 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
 
   // Get send button classes
   const getSendButtonClasses = () => {
-    const baseClasses = `flex justify-center items-center w-8 h-6 transition-colors cursor-pointer ${themeConfig.buttonHover} ${
-      useTextarea ? 'h-8 rounded-lg' : 'rounded-2xl h-full'
+    const baseClasses = `flex justify-center items-center w-8 transition-colors cursor-pointer ${themeConfig.buttonHover} ${
+      useTextarea ? 'h-8 rounded-lg' : 'rounded-2xl h-full h-6 '
     }`;
     
     if (!input.trim() && !loading) {
@@ -70,9 +72,9 @@ const ChatFooter: React.FC<ChatFooterProps> = ({
       style={style}
     >
       <div 
-        className={`flex ${useTextarea ? 'rounded-lg p-2 pb-1 flex-col' : 'rounded-2xl flex-row w-full'} border ${themeConfig.border} ${className} overflow-hidden`}
+        className={`flex ${useTextarea ? 'rounded-lg p-2 pb-1 flex-col' : 'rounded-2xl flex-row w-full'} border ${themeConfig.border} ${className} overflow-hidden ${positionType === 'fullscreen' ? 'max-w-3xl mx-auto' : 'w-full'}`}
       >
-        <div className={`flex ${useTextarea ? 'items-end' : 'items-center gap-2 w-full p-1'} justify-between relative`}>
+        <div className={`flex ${useTextarea ? 'flex-col items-end' : 'flex-row tems-center gap-2 w-full p-1'} justify-between relative`}>
           {useTextarea ? (
             <textarea
               ref={inputRef as React.RefObject<HTMLTextAreaElement>}
