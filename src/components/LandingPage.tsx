@@ -57,7 +57,7 @@ const basicInstallCode = `npm install p-gpt`;
 const basicUsageCode = `import { PGPT } from 'p-gpt';
 import 'dist/index.css';
 
-function App() {
+export default function App() {
   return (
     <PGPT apiKey="YOUR_API_KEY" />
   );
@@ -66,7 +66,7 @@ function App() {
 const advancedUsageCode = `import { PGPT } from 'p-gpt';
 import 'dist/index.css';
 
-function App() {
+export default function App() {
   return (
     <PGPT 
       apiKey="YOUR_API_KEY" 
@@ -85,7 +85,7 @@ function App() {
 const geminiUsageCode = `import { PGPT } from 'p-gpt';
 import 'dist/index.css';
 
-function App() {
+export default function App() {
   return (
     <PGPT 
       apiKey="YOUR_GEMINI_API_KEY" 
@@ -105,7 +105,7 @@ function App() {
 const routerUsageCode = `import { PGPT } from 'p-gpt';
 import 'dist/index.css';
 
-function App() {
+export default function App() {
   return (
     <PGPT 
       routerConfig={{
@@ -122,7 +122,7 @@ function App() {
 const contextUsageCode = `import { PGPT } from 'p-gpt';
 import 'dist/index.css';
 
-function App() {
+export default function App() {
   return (
     <PGPT 
       apiKey="YOUR_API_KEY"
