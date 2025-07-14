@@ -30,7 +30,7 @@
     "type": "git",
     "url": "git+https://github.com/code-abdulrehman/p-gpt.git"
   },
-  "homepage": "https://github.com/code-abdulrehman/p-gpt#readme",
+  "homepage": "https://p-gpt-bots.vercel.app/",
   "bugs": {
     "url": "https://github.com/code-abdulrehman/p-gpt/issues"
   },

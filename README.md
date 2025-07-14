@@ -37,7 +37,7 @@ pnpm add p-gpt
 import { PGPT } from 'p-gpt';
 import 'dist/index.css';
 
-function App() {
+export default function App() {
   return (
     <PGPT 
       apiKey="YOUR_API_KEY" 
@@ -54,7 +54,7 @@ function App() {
 import { PGPT } from 'p-gpt';
 import 'dist/index.css';
 
-function App() {
+export default function App() {
   return (
     <PGPT 
       apiKey="YOUR_GEMINI_API_KEY" 
@@ -77,7 +77,7 @@ function App() {
 import { PGPT } from 'p-gpt';
 import 'dist/index.css';
 
-function App() {
+export default function App() {
   return (
     <PGPT 
       routerConfig={{
